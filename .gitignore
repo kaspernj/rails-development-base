@@ -1,0 +1,3 @@
+shared/config.rb
+shared/ssh/authorized_keys
+shared/ssh/config
