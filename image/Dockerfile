@@ -20,9 +20,6 @@ RUN ln -s /shared/ssh/authorized_keys /home/dev/.ssh/authorized_keys
 
 RUN mkdir /var/run/sshd
 
-# Set up allowed sudo commands
-COPY ln -s dev_sudo_access /etc/sudoers.d/90-dev-user
-
 # Install MySQL
 RUN apt-get -y --force-yes install mysql-server
 RUN service mysql start && su -c "mysql -u root -e \"CREATE USER 'dev'@'%'\"" && su -c "mysql -u root -e \"GRANT ALL PRIVILEGES ON *.* TO 'dev'@'%' WITH GRANT OPTION;\"" && service mysql stop
@@ -32,10 +29,6 @@ RUN ln -s /shared/mysql/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf
 # Install Postgres
 RUN apt-get -y --force-yes install postgresql postgresql-contrib libpq-dev
 RUN service postgresql start && su postgres -c "createuser -d -r -s dev" && service postgresql stop
-RUN rm /etc/postgresql/9.5/main/pg_hba.conf
-RUN rm /etc/postgresql/9.5/main/postgresql.conf
-RUN ln -s /shared/postgres/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
-RUN ln -s /shared/postgres/postgresql.conf /etc/postgresql/9.5/main/postgresql.conf
 
 # Install Ruby
 RUN apt-get install -y --force-yes ruby2.3 ruby2.3-dev git-core
@@ -59,6 +52,10 @@ RUN ln -s /usr/bin/nodejs /usr/bin/node
 # Install RVM
 RUN su dev -c "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3"
 RUN su dev -c "curl -sSL https://get.rvm.io | bash"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm &&rvm install 2.3.1" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm &&rvm install 2.3.2" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm &&rvm install 2.3.3"
 
 # Add the entrypoint
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
