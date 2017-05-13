@@ -10,16 +10,18 @@ RUN apt-get install -y --force-yes debfoster elasticsearch nano cron openssh-ser
 
 # Configure dev user
 RUN /usr/sbin/useradd -s /bin/bash -m dev
+RUN echo "dev:password" | chpasswd
 
 RUN mkdir /home/dev/.ssh
+RUN chmod 700 /home/dev/.ssh
 RUN chown -R dev:dev /home/dev/.ssh
-RUN ln -s /sharred/ssh/config /home/dev/.ssh/config
+RUN ln -s /shared/ssh/config /home/dev/.ssh/config
 RUN ln -s /shared/ssh/authorized_keys /home/dev/.ssh/authorized_keys
 
 RUN mkdir /var/run/sshd
 
 # Set up allowed sudo commands
-RUN ln -s /shared/dev_sudo_access /etc/sudoers.d/90-dev-user
+COPY ln -s dev_sudo_access /etc/sudoers.d/90-dev-user
 
 # Install MySQL
 RUN apt-get -y --force-yes install mysql-server
@@ -48,7 +50,7 @@ RUN apt-get install -y --force-yes build-essential automake bison autoconf pkg-c
   libc6-dev libreadline6-dev libgdbm-dev libncurses5-dev libtool libffi-dev \
   libxslt-dev libxml2-dev libmysqlclient-dev libmagick++-dev imagemagick \
   libsqlite3-dev sqlite3 libpq-dev qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base \
-  gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev
+  gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb
 
 # Install NodeJS
 RUN apt-get install -y --force-yes nodejs
@@ -60,4 +62,5 @@ RUN su dev -c "curl -sSL https://get.rvm.io | bash"
 
 # Add the entrypoint
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
