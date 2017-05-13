@@ -52,10 +52,10 @@ RUN ln -s /usr/bin/nodejs /usr/bin/node
 # Install RVM
 RUN su dev -c "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3"
 RUN su dev -c "curl -sSL https://get.rvm.io | bash"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.1" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.3"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.1"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.3"
 
 # Add the entrypoint
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
