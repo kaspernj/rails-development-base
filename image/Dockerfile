@@ -60,4 +60,5 @@ RUN su dev -c "curl -sSL https://get.rvm.io | bash"
 
 # Add the entrypoint
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
