@@ -1,0 +1,4 @@
+shared/config.rb
+shared/log/last_startup
+shared/ssh/authorized_keys
+shared/ssh/config
