@@ -35,3 +35,7 @@ end
 
 puts "Fixing SSH permissions"
 File.chmod(0600, "/home/dev/.ssh/authorized_keys", "/home/dev/.ssh/config")
+
+puts "Installing SSHD config"
+File.copy("/shared/ssh/sshd_config", "/etc/ssh/sshd_config")
+File.chmod(0600, "/etc/ssh/sshd_config")
