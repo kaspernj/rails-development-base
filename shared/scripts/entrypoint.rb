@@ -28,5 +28,10 @@ if $config[:postgres]
   puts system("/etc/init.d/postgresql start")
 end
 
+if $config[:elasticsearch]
+  puts "Starting Elasticsearch"
+  puts system("service elasticsearch start")
+end
+
 puts "Fixing SSH permissions"
 File.chmod(0600, "/home/dev/.ssh/authorized_keys", "/home/dev/.ssh/config")
