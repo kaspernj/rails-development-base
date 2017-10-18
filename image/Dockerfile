@@ -6,7 +6,7 @@ RUN apt-get update
 RUN apt-get install -y --force-yes apt-utils
 
 # Install base packages
-RUN apt-get install -y --force-yes debfoster elasticsearch nano cron openssh-server redis-server sudo thunar
+RUN apt-get update; apt-get install -y --force-yes debfoster elasticsearch nano cron openssh-server redis-server sudo thunar
 
 # Configure dev user
 RUN /usr/sbin/useradd -s /bin/bash -m dev
@@ -50,7 +50,7 @@ RUN apt-get install -y --force-yes nodejs
 RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 # Install RVM
-RUN su dev -c "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3"
+RUN su dev -c "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
 RUN su dev -c "curl -sSL https://get.rvm.io | bash"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.1"
