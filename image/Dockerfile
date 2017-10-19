@@ -10,14 +10,16 @@ RUN apt-get update; apt-get install -y --force-yes debfoster elasticsearch nano 
 
 # Configure dev user
 RUN /usr/sbin/useradd -s /bin/bash -m dev
-RUN echo "dev:password" | chpasswd
 
+# Use auth keys to access SSH in shared/ssh/authorized_keys instead of a password
+# RUN echo "dev:password" | chpasswd
+
+# Configure SSH
 RUN mkdir /home/dev/.ssh
 RUN chmod 700 /home/dev/.ssh
 RUN chown -R dev:dev /home/dev/.ssh
 RUN ln -s /shared/ssh/config /home/dev/.ssh/config
 RUN ln -s /shared/ssh/authorized_keys /home/dev/.ssh/authorized_keys
-
 RUN mkdir /var/run/sshd
 
 # Install MySQL
@@ -29,6 +31,8 @@ RUN ln -s /shared/mysql/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf
 # Install Postgres
 RUN apt-get -y --force-yes install postgresql postgresql-contrib libpq-dev
 RUN service postgresql start && su postgres -c "createuser -d -r -s dev" && service postgresql stop
+ADD postgres-utf8-fix.sql /tmp/postgres-utf8-fix.sql
+RUN service postgresql restart && sudo -u postgres psql -f /tmp/postgres-utf8-fix.sql && service postgresql stop
 
 # Install Ruby
 RUN apt-get install -y --force-yes ruby2.3 ruby2.3-dev git-core
