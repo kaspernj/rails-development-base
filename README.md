@@ -7,7 +7,7 @@ A Docker image for developing Rails applications inside a Docker container for s
 
 When developing multiple applications as a developer, you are exposed to the code of a lot of other developers. You don't know what the code from various libraries are actually doing.
 
-For this reason it makes sense to develop your project inside a sanddocker. In this case that sandbox is a Docker container.
+For this reason it makes sense to develop your project inside a sandbox. In this case that sandbox is a Docker container.
 
 By using a combination of Docker, SSH, SSHFS, XQuartz, Gitg and Regexxer this can be done.
 
