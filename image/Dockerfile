@@ -20,6 +20,8 @@ RUN chmod 700 /home/dev/.ssh
 RUN chown -R dev:dev /home/dev/.ssh
 RUN ln -s /shared/ssh/config /home/dev/.ssh/config
 RUN ln -s /shared/ssh/authorized_keys /home/dev/.ssh/authorized_keys
+RUN mv /etc/ssh/sshd_config /etc/ssh/sshd_config.original
+RUN ln -s /shared/ssh/sshd_config /etc/ssh/sshd_config
 RUN mkdir /var/run/sshd
 
 # Install MySQL
@@ -40,6 +42,9 @@ RUN gem install bundler
 
 # Install Git
 RUN apt-get install -y --force-yes git gitg
+
+# Install Regexxer to search for contents in files
+RUN apt-get install -y --force-yes regexxer
 
 # Build deps for the Ruby and various gems
 RUN apt-get install -y --force-yes build-essential automake bison autoconf pkg-config \
