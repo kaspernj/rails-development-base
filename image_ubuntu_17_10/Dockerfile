@@ -14,8 +14,10 @@ RUN apt-get install -y --force-yes apt-utils
 RUN apt-get install -y --force-yes locales
 RUN locale-gen "en_US.UTF-8"
 
-# Install base packages
-RUN apt-get update; apt-get install -y --force-yes debfoster elasticsearch nano cron openssh-server redis-server sudo thunar
+# Install base apps and packages
+RUN apt-get update; apt-get install -y --force-yes debfoster elasticsearch git gitg nano \
+  cron nodejs openssh-server redis-server regexxer ruby2.3 ruby2.3-dev git-core screen \
+  sudo thunar
 
 # Configure dev user
 RUN /usr/sbin/useradd -s /bin/bash -m dev
@@ -45,18 +47,8 @@ RUN service postgresql start && su postgres -c "createuser -d -r -s dev" && serv
 ADD postgres-utf8-fix.sql /tmp/postgres-utf8-fix.sql
 RUN service postgresql restart && sudo -u postgres psql -f /tmp/postgres-utf8-fix.sql && service postgresql stop
 
-# Install Ruby
-RUN apt-get install -y --force-yes ruby2.3 ruby2.3-dev git-core
-RUN gem install bundler
-
-# Install Git
-RUN apt-get install -y --force-yes git gitg
-
 # Install Heroku CLI
 RUN wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
-
-# Install Regexxer to search for contents in files
-RUN apt-get install -y --force-yes regexxer
 
 # Build deps for the Ruby and various gems
 RUN apt-get install -y --force-yes build-essential automake bison autoconf pkg-config \
@@ -66,18 +58,25 @@ RUN apt-get install -y --force-yes build-essential automake bison autoconf pkg-c
   libsqlite3-dev sqlite3 libpq-dev qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base \
   gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb
 
-# Install NodeJS
-RUN apt-get install -y --force-yes nodejs
-
 # Install RVM
 RUN apt-get install -y --force-yes dirmngr
 RUN su dev -c "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
 RUN su dev -c "curl -sSL https://get.rvm.io | bash"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs enable"
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3"
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.1"
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2"
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.3"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.4 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.5 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.6 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.7 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.8 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.1 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.3 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.4 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.5 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.0 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.1 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.2 --rubygems ignore"
 
 # Add the entrypoint
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
