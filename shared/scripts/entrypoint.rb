@@ -19,13 +19,23 @@ end
 if $config[:postgres]
   puts "Starting Postgres"
 
-  FileUtils.remove(["/etc/postgresql/9.5/main/pg_hba.conf", "/etc/postgresql/9.5/main/postgresql.conf"])
-  FileUtils.copy("/shared/postgres/pg_hba.conf", "/etc/postgresql/9.5/main/pg_hba.conf")
-  FileUtils.copy("/shared/postgres/postgresql.conf", "/etc/postgresql/9.5/main/postgresql.conf")
+  if File.exist?("/etc/postgresql/9.5")
+    postgres_version = "9.5"
+  elsif File.exist?("/etc/postgresql/9.6")
+    postgres_version = "9.6"
+  else
+    raise "Could not figure out Postgrs version"
+  end
 
-  FileUtils.chown("postgres", "postgres", ["/etc/postgresql/9.5/main/pg_hba.conf", "/etc/postgresql/9.5/main/postgresql.conf"])
+  File.unlink("/etc/postgresql/#{postgres_version}/main/pg_hba.conf") if File.exists?("/etc/postgresql/#{postgres_version}/main/pg_hba.conf")
+  File.unlink("/etc/postgresql/#{postgres_version}/main/postgresql.conf") if File.exists?("/etc/postgresql/#{postgres_version}/main/postgresql.conf")
 
-  puts system("/etc/init.d/postgresql start")
+  FileUtils.copy("/shared/postgres/#{postgres_version}/pg_hba.conf", "/etc/postgresql/#{postgres_version}/main/pg_hba.conf")
+  FileUtils.copy("/shared/postgres/#{postgres_version}/postgresql.conf", "/etc/postgresql/#{postgres_version}/main/postgresql.conf")
+
+  FileUtils.chown("postgres", "postgres", ["/etc/postgresql/#{postgres_version}/main/pg_hba.conf", "/etc/postgresql/#{postgres_version}/main/postgresql.conf"])
+
+  puts system("/etc/init.d/postgresql restart")
 end
 
 if $config[:elasticsearch]
@@ -37,5 +47,6 @@ puts "Fixing SSH permissions"
 File.chmod(0600, "/home/dev/.ssh/authorized_keys", "/home/dev/.ssh/config")
 
 puts "Installing SSHD config"
+File.unlink("/etc/ssh/sshd_config") if File.exists?("/etc/ssh/sshd_config")
 FileUtils.copy("/shared/ssh/sshd_config", "/etc/ssh/sshd_config")
 File.chmod(0600, "/etc/ssh/sshd_config")
