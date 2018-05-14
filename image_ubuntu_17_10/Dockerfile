@@ -50,29 +50,6 @@ RUN service postgresql restart && sudo -u postgres psql -f /tmp/postgres-utf8-fi
 # Install Heroku CLI
 RUN wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
 
-# Install Yarn
-RUN apt-get update && apt-get install -y --force-yes curl wget
-RUN apt-get remove --purge cmdtest
-RUN ["/bin/bash", "-c", "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -"]
-RUN ["/bin/bash", "-c", "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list"]
-RUN apt-get update
-RUN apt-get -o Dpkg::Options::="--force-overwrite" install -y --force-yes yarn
-
-# Chrome
-RUN apt-get install -y --force-yes libxss1 libappindicator1 libindicator7
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN dpkg -i google-chrome*.deb; exit 0
-RUN apt-get install -f -y --force-yes
-
-# ChromeDriver
-RUN apt-get install -y --force-yes unzip
-RUN wget -N http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip -P ~/
-RUN unzip ~/chromedriver_linux64.zip -d ~/
-RUN rm ~/chromedriver_linux64.zip
-RUN sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
-RUN sudo chown root:root /usr/local/bin/chromedriver
-RUN sudo chmod 0755 /usr/local/bin/chromedriver
-
 # Java
 RUN apt-get install -y --force-yes software-properties-common
 RUN add-apt-repository ppa:webupd8team/java
@@ -120,6 +97,29 @@ RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.1 --rubygems
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.2 --rubygems ignore"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.3 --rubygems ignore"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.4 --rubygems ignore"
+
+# Chrome
+RUN apt-get install -y --force-yes libxss1 libappindicator1 libindicator7
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN dpkg -i google-chrome*.deb; exit 0
+RUN apt-get install -f -y --force-yes
+
+# ChromeDriver
+RUN apt-get install -y --force-yes unzip
+RUN wget -N http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip -P ~/
+RUN unzip ~/chromedriver_linux64.zip -d ~/
+RUN rm ~/chromedriver_linux64.zip
+RUN sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
+RUN chown root:root /usr/local/bin/chromedriver
+RUN chmod 0755 /usr/local/bin/chromedriver
+
+# Yarn
+RUN apt-get update && apt-get install -y --force-yes curl wget
+RUN apt-get remove --purge cmdtest
+RUN ["/bin/bash", "-c", "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -"]
+RUN ["/bin/bash", "-c", "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list"]
+RUN apt-get update
+RUN apt-get -o Dpkg::Options::="--force-overwrite" install -y --force-yes yarn
 
 # Add the entrypoint
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
