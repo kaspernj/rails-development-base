@@ -7,15 +7,14 @@ ENV LANG en_US.UTF-8
 
 # APT configuration
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update
-RUN apt-get install -y --force-yes apt-utils
+RUN apt-get update && apt-get install -y --force-yes apt-utils wget curl
 
 # Locale install
-RUN apt-get install -y --force-yes locales
+RUN apt-get update && apt-get install -y --force-yes locales
 RUN locale-gen "en_US.UTF-8"
 
 # Install base apps and packages
-RUN apt-get update; apt-get install -y --force-yes debfoster elasticsearch git gitg nano \
+RUN apt-get update && apt-get install -y --force-yes debfoster elasticsearch git gitg nano \
   cron openssh-server redis-server regexxer ruby2.3 ruby2.3-dev git-core screen \
   sudo thunar
 
@@ -48,26 +47,23 @@ ADD postgres-utf8-fix.sql /tmp/postgres-utf8-fix.sql
 RUN service postgresql restart && sudo -u postgres psql -f /tmp/postgres-utf8-fix.sql && service postgresql stop
 
 # Install Heroku CLI
-RUN wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
+RUN curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
 
 # Java
 RUN apt-get install -y --force-yes software-properties-common
-RUN add-apt-repository ppa:webupd8team/java
-RUN apt-get update
+RUN add-apt-repository ppa:linuxuprising/java
 RUN ["/bin/bash", "-c", "echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections"]
 RUN ["/bin/bash", "-c", "echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections"]
-RUN apt-get install -y --force-yes oracle-java9-installer
+RUN apt-get update && apt-get install -y --force-yes oracle-java10-installer
 
 # Elasticsearch
 RUN ["/bin/bash", "-c", "wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -"]
-RUN apt-get install -y --force-yes apt-transport-https curl wget
 RUN ["/bin/bash", "-c", "echo \"deb https://artifacts.elastic.co/packages/6.x/apt stable main\" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list"]
 
 # Install NodeJS
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 
 # Yarn
-RUN apt-get update && apt-get install -y --force-yes curl wget
 RUN apt-get remove --purge cmdtest
 RUN ["/bin/bash", "-c", "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -"]
 RUN ["/bin/bash", "-c", "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list"]
@@ -84,26 +80,38 @@ RUN apt-get update && apt-get install -y --force-yes build-essential automake bi
 RUN apt-get install -y --force-yes dirmngr
 RUN su dev -c "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
 RUN su dev -c "curl -sSL https://get.rvm.io | bash"
+
+# Rubies with normal SSL libs
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs disable"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.1"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.3"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.4"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.5"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.6"
+
+# Test that SSL is working
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm use 2.3.1 && gem install specific_install && gem specific_install https://github.com/kaspernj/stripe_model_callbacks.git"
+
+# Rubies with RVM SSL libs
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs enable"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm pkg install openssl"
+
+# Rubies
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.1"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.2"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.3"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.4 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.5 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.6 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.7 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.8 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.1 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.3 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.4 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.5 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.0 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.1 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.2 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.3 --rubygems ignore"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.4 --rubygems ignore"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.4"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.5"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.6"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.7"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.8"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.0"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.1"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.2"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.3"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.4"
 
 # Chrome
 RUN apt-get install -y --force-yes libxss1 libappindicator1 libindicator7
