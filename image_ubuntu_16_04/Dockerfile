@@ -46,13 +46,22 @@ RUN apt-get install -y --force-yes git gitg
 # Install Regexxer to search for contents in files
 RUN apt-get install -y --force-yes regexxer
 
+# Install NodeJS
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+
+# Yarn
+RUN apt-get update && apt-get install -y --force-yes curl wget
+RUN apt-get remove --purge cmdtest
+RUN ["/bin/bash", "-c", "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -"]
+RUN ["/bin/bash", "-c", "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list"]
+
 # Build deps for the Ruby and various gems
 RUN apt-get install -y --force-yes build-essential automake bison autoconf pkg-config \
   openssl libssl-dev zlib1g zlib1g-dev libyaml-dev git-core curl gawk g++ gcc make \
   libc6-dev libreadline6-dev libgdbm-dev libncurses5-dev libtool libffi-dev \
   libxslt-dev libxml2-dev libmysqlclient-dev libmagick++-dev imagemagick \
   libsqlite3-dev sqlite3 libpq-dev qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base \
-  gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb
+  gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb nodejs yarn
 
 # Install NodeJS
 RUN apt-get install -y --force-yes nodejs

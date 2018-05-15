@@ -16,7 +16,7 @@ RUN locale-gen "en_US.UTF-8"
 
 # Install base apps and packages
 RUN apt-get update; apt-get install -y --force-yes debfoster elasticsearch git gitg nano \
-  cron nodejs openssh-server redis-server regexxer ruby2.3 ruby2.3-dev git-core screen \
+  cron openssh-server redis-server regexxer ruby2.3 ruby2.3-dev git-core screen \
   sudo thunar
 
 # Configure dev user
@@ -60,18 +60,25 @@ RUN apt-get install -y --force-yes oracle-java9-installer
 
 # Elasticsearch
 RUN ["/bin/bash", "-c", "wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -"]
-RUN apt-get install -y --force-yes apt-transport-https
+RUN apt-get install -y --force-yes apt-transport-https curl wget
 RUN ["/bin/bash", "-c", "echo \"deb https://artifacts.elastic.co/packages/6.x/apt stable main\" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list"]
-RUN apt-get update
-RUN apt-get install -y --force-yes elasticsearch
+
+# Install NodeJS
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+
+# Yarn
+RUN apt-get update && apt-get install -y --force-yes curl wget
+RUN apt-get remove --purge cmdtest
+RUN ["/bin/bash", "-c", "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -"]
+RUN ["/bin/bash", "-c", "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list"]
 
 # Build deps for the Ruby and various gems
-RUN apt-get install -y --force-yes build-essential automake bison autoconf pkg-config \
+RUN apt-get update && apt-get install -y --force-yes build-essential automake bison autoconf pkg-config \
   openssl libssl-dev zlib1g zlib1g-dev libyaml-dev git-core curl gawk g++ gcc make \
   libc6-dev libreadline6-dev libgdbm-dev libncurses5-dev libtool libffi-dev \
   libxslt-dev libxml2-dev libmysqlclient-dev libmagick++-dev imagemagick \
   libsqlite3-dev sqlite3 libpq-dev qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base \
-  gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb
+  gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb elasticsearch nodejs yarn
 
 # Install RVM
 RUN apt-get install -y --force-yes dirmngr
@@ -112,14 +119,6 @@ RUN rm ~/chromedriver_linux64.zip
 RUN sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
 RUN chown root:root /usr/local/bin/chromedriver
 RUN chmod 0755 /usr/local/bin/chromedriver
-
-# Yarn
-RUN apt-get update && apt-get install -y --force-yes curl wget
-RUN apt-get remove --purge cmdtest
-RUN ["/bin/bash", "-c", "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -"]
-RUN ["/bin/bash", "-c", "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list"]
-RUN apt-get update
-RUN apt-get -o Dpkg::Options::="--force-overwrite" install -y --force-yes yarn
 
 # Add the entrypoint
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
