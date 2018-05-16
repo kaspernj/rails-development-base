@@ -1,4 +1,4 @@
-FROM ubuntu:17.10
+FROM ubuntu:18.04
 
 # Locale configuration
 ENV LANGUAGE en_US.UTF-8
@@ -15,7 +15,7 @@ RUN locale-gen "en_US.UTF-8"
 
 # Install base apps and packages
 RUN apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
-  cron openssh-server redis-server regexxer ruby2.3 ruby2.3-dev git-core screen \
+  cron openssh-server redis-server regexxer ruby ruby-dev git-core screen \
   sudo thunar
 
 # Configure dev user
@@ -87,24 +87,25 @@ RUN su dev -c "curl -sSL https://get.rvm.io | bash"
 # Rubies with RVM SSL libs
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs enable"
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm pkg install openssl"
+# RUN apt-get remove --purge -y libssl-dev && apt-get autoremove -y
 
 # Rubies with normal SSL libs
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs disable"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.1"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.2"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.3"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.1"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.2"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.3"
 
 # Rubies
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.4"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.5"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.6"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.7"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.8"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.1"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.4"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.5"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.6"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.7"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.8"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.1"
 
 # Test that SSL is working
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm use 2.3.1 && gem install specific_install && gem specific_install https://github.com/kaspernj/stripe_model_callbacks.git"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm use 2.3.1 && gem install specific_install && gem specific_install https://github.com/kaspernj/stripe_model_callbacks.git"
 
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.3"
