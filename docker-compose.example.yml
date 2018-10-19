@@ -1,0 +1,27 @@
+version: "3"
+services:
+  web:
+    image: "kaspernj/rails-development-base-ubuntu-18-04"
+    ports:
+      - "38022:22"
+    volumes:
+      - "/path/shared:/shared"
+  postgres:
+    image: "mdillon/postgis"
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: "username"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "database-name"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  redis:
+    image: "redis"
+    expose:
+      - 6379
+    volumes:
+      - redis:/var/lib/redis/data
+volumes:
+  redis:
+  postgres:
