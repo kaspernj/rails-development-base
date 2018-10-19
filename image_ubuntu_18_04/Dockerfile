@@ -15,7 +15,7 @@ RUN locale-gen "en_US.UTF-8"
 
 # Install base apps and packages
 RUN apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
-  cron openssh-server redis-server regexxer ruby ruby-dev git-core screen \
+  cron openssh-server regexxer ruby ruby-dev git-core screen \
   sudo thunar
 
 # Configure dev user
