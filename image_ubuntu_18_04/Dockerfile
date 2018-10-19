@@ -34,32 +34,15 @@ RUN mv /etc/ssh/sshd_config /etc/ssh/sshd_config.original
 RUN ln -s /shared/ssh/sshd_config /etc/ssh/sshd_config
 RUN mkdir /var/run/sshd
 
-# Install MySQL
-RUN apt-get -y --force-yes install mysql-server
-RUN service mysql start && su -c "mysql -u root -e \"CREATE USER 'dev'@'%'\"" && su -c "mysql -u root -e \"GRANT ALL PRIVILEGES ON *.* TO 'dev'@'%' WITH GRANT OPTION;\"" && service mysql stop
-RUN rm /etc/mysql/mysql.conf.d/mysqld.cnf
-RUN ln -s /shared/mysql/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf
-
-# Install Postgres
-RUN apt-get -y --force-yes install postgresql postgresql-contrib libpq-dev
-RUN service postgresql start && su postgres -c "createuser -d -r -s dev" && service postgresql stop
-ADD postgres-utf8-fix.sql /tmp/postgres-utf8-fix.sql
-RUN service postgresql restart && sudo -u postgres psql -f /tmp/postgres-utf8-fix.sql && service postgresql stop
-
 # Install Heroku CLI
 RUN curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
 
 # Java
 RUN apt-get install -y --force-yes software-properties-common
 RUN add-apt-repository ppa:linuxuprising/java
-RUN ["/bin/bash", "-c", "echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections"]
-RUN ["/bin/bash", "-c", "echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections"]
-RUN apt-get update && apt-get install -y --force-yes oracle-java10-installer
-
-# Elasticsearch
-RUN ["/bin/bash", "-c", "wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -"]
-RUN ["/bin/bash", "-c", "echo \"deb https://artifacts.elastic.co/packages/6.x/apt stable main\" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list"]
-RUN apt-get update && apt-get install -y --force-yes elasticsearch
+RUN ["/bin/bash", "-c", "echo debconf shared/accepted-oracle-license-v1-2 select true | debconf-set-selections"]
+RUN ["/bin/bash", "-c", "echo debconf shared/accepted-oracle-license-v1-2 seen true | debconf-set-selections"]
+RUN apt-get update && apt-get install -y --force-yes oracle-java11-installer
 
 # Install NodeJS
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
