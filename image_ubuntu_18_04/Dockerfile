@@ -90,11 +90,11 @@ RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs disable"
 # Test that SSL is working
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm use 2.3.1 && gem install specific_install && gem specific_install https://github.com/kaspernj/stripe_model_callbacks.git"
 
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.3"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.4"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.5"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.6"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.3"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.4"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.5"
+# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.6"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.0"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.1"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.2"
@@ -118,7 +118,7 @@ RUN chmod 0755 /usr/local/bin/chromedriver
 
 # Clean up
 RUN apt-get clean
-RUN su build -c "source /home/build/.rvm/scripts/rvm && rvm cleanup all"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all"
 
 # Add the entrypoint
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
