@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y --force-yes apt-utils wget curl
 RUN apt-get update && apt-get install -y --force-yes locales
 RUN locale-gen "en_US.UTF-8"
 
+# Postgres tools
+RUN apt-get update && apt-get install -y --force-yes postgresql-client
+
 # Install base apps and packages
 RUN apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
   cron openssh-server regexxer ruby ruby-dev git-core screen \
@@ -106,13 +109,14 @@ RUN apt-get install -y --force-yes libxss1 libappindicator1 libindicator7
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN dpkg -i google-chrome*.deb; exit 0
 RUN apt-get install -f -y --force-yes
+RUN rm google-chrome-stable_current_amd64.deb
 
 # ChromeDriver
 RUN apt-get install -y --force-yes unzip
 RUN wget -N http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip -P ~/
 RUN unzip ~/chromedriver_linux64.zip -d ~/
 RUN rm ~/chromedriver_linux64.zip
-RUN sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
+RUN mv -f ~/chromedriver /usr/local/bin/chromedriver
 RUN chown root:root /usr/local/bin/chromedriver
 RUN chmod 0755 /usr/local/bin/chromedriver
 
