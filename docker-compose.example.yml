@@ -6,8 +6,9 @@ services:
       - "38022:22"
     volumes:
       - "/path/shared:/shared"
+      - "development:/home/dev/Development"
   postgres:
-    image: "mdillon/postgis"
+    image: "postgres"
     expose:
       - 5432
     environment:
@@ -23,5 +24,6 @@ services:
     volumes:
       - redis:/var/lib/redis/data
 volumes:
+  development:
   redis:
   postgres:
