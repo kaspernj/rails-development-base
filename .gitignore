@@ -1,5 +1,6 @@
 docker-compose.yml
 shared/config.rb
+shared/profile
 shared/log/last_startup
 shared/ssh/authorized_keys
 shared/ssh/config

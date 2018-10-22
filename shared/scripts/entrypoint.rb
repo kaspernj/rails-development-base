@@ -52,10 +52,10 @@ File.unlink("/etc/ssh/sshd_config") if File.exists?("/etc/ssh/sshd_config")
 FileUtils.copy("/shared/ssh/sshd_config", "/etc/ssh/sshd_config")
 
 
-compose_environment_file_path = "/etc/profile.d/docker-compose-environment"
+compose_environment_file_path = "/shared/profile"
 
 if File.exists?(compose_environment_file_path)
-  puts "Installing Docker Compose environment"
+  puts "Installing custom profile"
 
   profile_path = "/home/dev/.profile"
   profile_content = File.read(profile_path)
