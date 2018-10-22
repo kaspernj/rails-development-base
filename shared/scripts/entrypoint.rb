@@ -44,9 +44,28 @@ if $config[:elasticsearch]
 end
 
 puts "Fixing SSH permissions"
-File.chmod(0600, "/home/dev/.ssh/authorized_keys", "/home/dev/.ssh/config")
+File.chmod(0600, "/home/dev/.ssh/authorized_keys") if File.exists?("/home/dev/.ssh/authorized_keys")
+File.chmod(0600, "/home/dev/.ssh/config") if File.exists?("/home/dev/.ssh/config")
 
 puts "Installing SSHD config"
 File.unlink("/etc/ssh/sshd_config") if File.exists?("/etc/ssh/sshd_config")
 FileUtils.copy("/shared/ssh/sshd_config", "/etc/ssh/sshd_config")
+
+
+compose_environment_file_path = "/etc/profile.d/docker-compose-environment"
+
+if File.exists?(compose_environment_file_path)
+  puts "Installing Docker Compose environment"
+
+  profile_path = "/home/dev/.profile"
+  profile_content = File.read(profile_path)
+
+  unless profile_content.include?(". #{compose_environment_file_path}")
+    profile_content << "\n\n. #{compose_environment_file_path}"
+    File.open(profile_path, "w") do |fp|
+      fp.write(profile_content)
+    end
+  end
+end
+
 File.chmod(0600, "/etc/ssh/sshd_config")
