@@ -1,6 +1,9 @@
 docker-compose.yml
+mount_sshfs.sh
 shared/config.rb
 shared/profile
 shared/log/last_startup
 shared/ssh/authorized_keys
 shared/ssh/config
+ssh.sh
+ssh_with_forwards.sh
