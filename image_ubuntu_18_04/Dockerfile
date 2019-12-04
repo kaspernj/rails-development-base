@@ -100,7 +100,7 @@ RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs disable"
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.6"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.0 && rvm install 2.4.1 && rvm install 2.4.2 && rvm install 2.4.3 && rvm install 2.4.4 && rvm install 2.4.5 && rvm install 2.4.6"
 RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.0 && rvm install 2.5.1 && rvm install 2.5.2 && rvm install 2.5.3 && rvm install 2.5.4 && rvm install 2.5.5"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.0 && rvm install 2.6.1 && rvm install 2.6.2 && rvm install 2.6.3"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.0 && rvm install 2.6.1 && rvm install 2.6.2 && rvm install 2.6.3 && rvm install 2.6.4 && rvm install 2.6.5"
 
 # Chrome
 RUN apt-get install -y --force-yes libxss1 libappindicator1 libindicator7
