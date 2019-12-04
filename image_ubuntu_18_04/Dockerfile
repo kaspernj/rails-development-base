@@ -45,7 +45,7 @@ RUN apt-get install -y --force-yes software-properties-common
 RUN add-apt-repository ppa:linuxuprising/java
 RUN ["/bin/bash", "-c", "echo debconf shared/accepted-oracle-license-v1-2 select true | debconf-set-selections"]
 RUN ["/bin/bash", "-c", "echo debconf shared/accepted-oracle-license-v1-2 seen true | debconf-set-selections"]
-RUN apt-get update && apt-get install -y --force-yes oracle-java12-installer
+RUN apt-get update && apt-get install -y --force-yes oracle-java13-installer
 
 # Install NodeJS
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
