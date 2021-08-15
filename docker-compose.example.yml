@@ -5,8 +5,8 @@ services:
     ports:
       - "38022:22"
     volumes:
-      - "/path/shared:/shared"
-      - "development:/home/dev/Development"
+      - "./shared:/shared"
+      - "homedev:/home/dev"
   postgres:
     image: "postgres"
     expose:
@@ -24,6 +24,6 @@ services:
     volumes:
       - redis:/var/lib/redis/data
 volumes:
-  development:
+  homedev:
   redis:
   postgres:
