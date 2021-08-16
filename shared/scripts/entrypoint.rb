@@ -50,6 +50,7 @@ unless File.exists?("/home/dev/.ssh")
 end
 
 puts "Fixing SSH permissions"
+FileUtils.chown("dev", "dev", ["/home/dev/.ssh/authorized_keys", "/home/dev/.ssh/config"])
 File.chmod(0600, "/home/dev/.ssh/authorized_keys") if File.exists?("/home/dev/.ssh/authorized_keys")
 File.chmod(0600, "/home/dev/.ssh/config") if File.exists?("/home/dev/.ssh/config")
 
