@@ -117,6 +117,9 @@ RUN apt-get install -f -y --force-yes && \
   rm ~/chromedriver_linux64.zip && \
   sudo mv -f ~/chromedriver /usr/local/bin/chromedriver && \
   chown root:root /usr/local/bin/chromedriver && \
-  chmod 0755 /usr/local/bin/chromedriver
+  chmod 0755 /usr/local/bin/chromedriver && \
+
+  echo "Preparing home dir to be moved into mount on first boot" && \
+  mv /home/dev /home/dev-sample
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

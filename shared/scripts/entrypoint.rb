@@ -43,14 +43,30 @@ if $config[:elasticsearch]
   puts system("service elasticsearch start")
 end
 
+unless File.exists?("/home/dev/.ssh")
+  puts "Preparing home dir"
+  FileUtils.chown("dev", "dev", "/home/dev")
+  system("find", "/home/dev-sample/", "-mindepth", "1", "-maxdepth", "1", "-exec", "cp", "-rp", "{}", "/home/dev/", ";")
+end
+
 puts "Fixing SSH permissions"
 File.chmod(0600, "/home/dev/.ssh/authorized_keys") if File.exists?("/home/dev/.ssh/authorized_keys")
 File.chmod(0600, "/home/dev/.ssh/config") if File.exists?("/home/dev/.ssh/config")
 
 puts "Installing SSHD config"
 File.unlink("/etc/ssh/sshd_config") if File.exists?("/etc/ssh/sshd_config")
-FileUtils.copy("/shared/ssh/sshd_config", "/etc/ssh/sshd_config")
 
+unless File.exists?("/shared/ssh/sshd_config")
+  puts "Copying sample SSHD config since none exists"
+  FileUtils.copy("/shared/ssh/sshd_config.example", "/shared/ssh/sshd_config")
+end
+
+unless File.exists?("/shared/ssh/config")
+  puts "Copying sample SSH config since none exists"
+  FileUtils.copy("/shared/ssh/config.example", "/shared/ssh/config")
+end
+
+FileUtils.copy("/shared/ssh/sshd_config", "/etc/ssh/sshd_config")
 
 compose_environment_file_path = "/shared/profile"
 
@@ -58,6 +74,7 @@ if File.exists?(compose_environment_file_path)
   puts "Installing custom profile"
 
   profile_path = "/home/dev/.profile"
+  FileUtils.touch(profile_path) unless File.exists?(profile_path)
   profile_content = File.read(profile_path)
 
   unless profile_content.include?(". #{compose_environment_file_path}")

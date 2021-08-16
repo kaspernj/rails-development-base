@@ -1,4 +1,6 @@
 docker-compose.yml
+home-dev
+mariadb-var-lib
 mount_sshfs.sh
 shared/config.rb
 shared/profile
