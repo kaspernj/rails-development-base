@@ -1,7 +1,10 @@
 docker-compose.yml
 home-dev
 mariadb-var-lib
+mysql-var-lib
 mount_sshfs.sh
+postgres-var-lib
+redis-var-lib
 shared/config.rb
 shared/profile
 shared/log/last_startup

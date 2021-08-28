@@ -85,7 +85,27 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm use 2.3.1 && gem install specific_install && gem specific_install https://github.com/kaspernj/stripe_model_callbacks.git"
 
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2 2.3.3 2.3.4 2.3.5 2.3.6"
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.0 2.4.1 2.4.2 2.4.3 2.4.4 2.4.5 2.4.6 2.5.0 2.5.1 2.5.2 2.5.3 2.5.4 2.5.5 2.6.0 2.6.1 2.6.2 2.6.3 2.6.4 2.6.5 2.6.6 2.6.7" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.0" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.1" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.2" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.3" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.4" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.5" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.6" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.0" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.1" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.2" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.3" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.4" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.5" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.0" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.1" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.2" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.3" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.4" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.5" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.6" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.7" && \
 
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
 
