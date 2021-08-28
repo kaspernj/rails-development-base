@@ -28,7 +28,13 @@ unless File.exists?("/shared/ssh/config")
   FileUtils.copy("/shared/ssh/config.example", "/shared/ssh/config")
 end
 
-FileUtils.copy("/shared/ssh/sshd_config", "/etc/ssh/sshd_config")
+shared_sshd_file_path = "/shared/ssh/sshd_config"
+etc_sshd_file_path = "/etc/ssh/sshd_config"
+
+if !File.exists?(etc_sshd_file_path) || File.size(shared_sshd_file_path) != File.size(etc_sshd_file_path)
+  puts "Copying #{shared_sshd_file_path} to #{etc_sshd_file_path}"
+  FileUtils.copy(shared_sshd_file_path, etc_sshd_file_path)
+end
 
 compose_environment_file_path = "/shared/profile"
 
