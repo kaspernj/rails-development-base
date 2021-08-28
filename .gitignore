@@ -5,7 +5,6 @@ mysql-var-lib
 mount_sshfs.sh
 postgres-var-lib
 redis-var-lib
-shared/config.rb
 shared/profile
 shared/log/last_startup
 shared/ssh/authorized_keys
