@@ -7,6 +7,18 @@ services:
     volumes:
       - "./shared:/shared"
       - "homedev:/home/dev"
+  mariadb:
+    image: "mariadb:latest"
+    environment:
+      MARIADB_ROOT_HOST: "%"
+      MARIADB_ROOT_PASSWORD: topsecret
+      MARIADB_USER: dev
+      MARIADB_PASSWORD: secret
+    expose:
+      - 3306
+    mem_limit: 4G
+    volumes:
+      - mariadb:/var/lib/mysql
   postgres:
     image: "postgres"
     expose:
@@ -25,5 +37,6 @@ services:
       - redis:/var/lib/redis/data
 volumes:
   homedev:
+  mariadb:
   redis:
   postgres:
