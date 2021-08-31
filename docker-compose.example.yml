@@ -2,9 +2,14 @@ version: "2.3"
 services:
   web:
     image: "kaspernj/rails-development-base-ubuntu-20-04"
+    depends_on:
+      - mariadb
+      - postgres
+      - redis
     mem_limit: 4G
     ports:
       - "38022:22"
+    restart: unless-stopped
     volumes:
       - "./shared:/shared"
       - "homedev:/home/dev"
@@ -29,6 +34,7 @@ services:
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "database-name"
     mem_limit: 4G
+    restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
   redis:
@@ -36,6 +42,7 @@ services:
     expose:
       - 6379
     mem_limit: 2G
+    restart: unless-stopped
     volumes:
       - redis:/var/lib/redis/data
 volumes:
