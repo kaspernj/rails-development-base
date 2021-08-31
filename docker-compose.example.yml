@@ -1,7 +1,7 @@
 version: "2.3"
 services:
   web:
-    image: "kaspernj/rails-development-base-ubuntu-18-04"
+    image: "kaspernj/rails-development-base-ubuntu-20-04"
     mem_limit: 4G
     ports:
       - "38022:22"
