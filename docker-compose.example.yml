@@ -16,6 +16,7 @@ services:
   mariadb:
     image: "mariadb:latest"
     environment:
+      MARIADB_DATABASE: "database-name"
       MARIADB_ROOT_HOST: "%"
       MARIADB_ROOT_PASSWORD: topsecret
       MARIADB_USER: dev
