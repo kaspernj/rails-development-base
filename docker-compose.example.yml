@@ -24,6 +24,7 @@ services:
     expose:
       - 3306
     mem_limit: 4G
+    restart: unless-stopped
     volumes:
       - mariadb:/var/lib/mysql
   postgres:
