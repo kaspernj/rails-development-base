@@ -58,7 +58,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
   echo "Install Yarn" && \
   npm install --global yarn && \
->>>>>>> origin/master
 
 # Build deps for the Ruby and various gems
   apt-get update && apt-get install -y --force-yes build-essential automake bison autoconf pkg-config \
