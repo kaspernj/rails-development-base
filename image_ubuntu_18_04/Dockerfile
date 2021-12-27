@@ -45,16 +45,16 @@ RUN apt-get install -y --force-yes software-properties-common
 RUN add-apt-repository ppa:linuxuprising/java
 RUN ["/bin/bash", "-c", "echo debconf shared/accepted-oracle-license-v1-2 select true | debconf-set-selections"]
 RUN ["/bin/bash", "-c", "echo debconf shared/accepted-oracle-license-v1-2 seen true | debconf-set-selections"]
-RUN apt-get update && apt-get install -y --force-yes oracle-java13-installer
+RUN apt-get update && apt-get install -y --force-yes oracle-java14-installer
 
 # Install NodeJS
-RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 RUN apt-get update && apt-get install -y --force-yes nodejs
 
 # Yarn
 RUN apt-get remove --purge cmdtest
 RUN ["/bin/bash", "-c", "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -"]
-RUN ["/bin/bash", "-c", "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list"]
+RUN ["/bin/bash", "-c", "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | sudo tee /etc/apt/sources.list.d/yarn.list"]
 RUN apt-get update && apt-get install -y --force-yes yarn
 
 # Build deps for the Ruby and various gems
@@ -98,9 +98,10 @@ RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs disable"
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.4"
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.5"
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.6"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.0 && rvm install 2.4.1 && rvm install 2.4.2 && rvm install 2.4.3 && rvm install 2.4.4 && rvm install 2.4.5 && rvm install 2.4.6"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.0 && rvm install 2.5.1 && rvm install 2.5.2 && rvm install 2.5.3 && rvm install 2.5.4 && rvm install 2.5.5"
-RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.0 && rvm install 2.6.1 && rvm install 2.6.2 && rvm install 2.6.3 && rvm install 2.6.4 && rvm install 2.6.5"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.0 && rvm install 2.4.1 && rvm install 2.4.2 && rvm install 2.4.3 && rvm install 2.4.4 && rvm install 2.4.5 && rvm install 2.4.6 && rvm cleanup all"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.0 && rvm install 2.5.1 && rvm install 2.5.2 && rvm install 2.5.3 && rvm install 2.5.4 && rvm install 2.5.5 && rvm install 2.5.6 && rvm install 2.5.7 && rvm cleanup all"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.0 && rvm install 2.6.1 && rvm install 2.6.2 && rvm install 2.6.3 && rvm install 2.6.4 && rvm install 2.6.5 && rvm install 2.6.6 && rvm cleanup all"
+RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.0 && rvm install 2.7.1 && rvm cleanup all"
 
 # Chrome
 RUN apt-get install -y --force-yes libxss1 libappindicator1 libindicator7
