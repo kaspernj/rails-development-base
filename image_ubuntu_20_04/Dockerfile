@@ -46,9 +46,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   echo "Install Java" && \
   apt-get install -y --force-yes software-properties-common && apt-get clean && \
   add-apt-repository ppa:linuxuprising/java && \
-  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-2 select true | debconf-set-selections" && \
-  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-2 seen true | debconf-set-selections" && \
-  apt-get update && apt-get install -y --force-yes oracle-java16-installer && apt-get clean && \
+  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-3 select true | debconf-set-selections" && \
+  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-3 seen true | debconf-set-selections" && \
+  apt-get update && apt-get install -y --force-yes oracle-java17-installer && apt-get clean && \
 
   echo "Install NodeJS" && \
   curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \
@@ -121,6 +121,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.2" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.3" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.4" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.0.0" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
 
   echo "Install Chrome" && \

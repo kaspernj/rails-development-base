@@ -15,10 +15,10 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get update && apt-get install -y --force-yes locales && \
   locale-gen "en_US.UTF-8" && \
 
-  echo "Installi Postgres client" && \
+  echo "Install Postgres client" && \
   apt-get update && apt-get install -y --force-yes postgresql-client && \
 
-  echo "Installi base apps and packages" && \
+  echo "Install base apps and packages" && \
   apt-get update && apt-get install -y --force-yes debfoster firefox-geckodriver git gitg nano \
   cron openssh-server regexxer ruby ruby-dev git-core screen \
   sudo thunar && \
@@ -29,7 +29,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 # Use auth keys to access SSH in shared/ssh/authorized_keys instead of a password
 #   echo "dev:password" | chpasswd && \
 
-  echo "Configure SSH" && \
   echo "Configure SSH" && \
   mkdir /home/dev/.ssh && \
   chmod 700 /home/dev/.ssh && \
@@ -45,12 +44,11 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   curl https://cli-assets.heroku.com/install-ubuntu.sh | sh && \
 
   echo "Install Java" && \
-  echo "Install Java" && \
   apt-get install -y --force-yes software-properties-common && \
   add-apt-repository ppa:linuxuprising/java && \
-  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-2 select true | debconf-set-selections" && \
-  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-2 seen true | debconf-set-selections" && \
-  apt-get update && apt-get install -y --force-yes oracle-java16-installer && \
+  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-3 select true | debconf-set-selections" && \
+  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-3 seen true | debconf-set-selections" && \
+  apt-get update && apt-get install -y --force-yes oracle-java17-installer && \
 
   echo "Install NodeJS" && \
   curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \

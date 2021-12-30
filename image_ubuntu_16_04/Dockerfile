@@ -54,9 +54,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   echo "Install Java" && \
   apt-get install -y --force-yes software-properties-common && \
   add-apt-repository ppa:linuxuprising/java && \
-  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-2 select true | debconf-set-selections" && \
-  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-2 seen true | debconf-set-selections" && \
-  apt-get update && apt-get install -y --force-yes oracle-java16-installer && \
+  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-3 select true | debconf-set-selections" && \
+  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-3 seen true | debconf-set-selections" && \
+  apt-get update && apt-get install -y --force-yes oracle-java17-installer && \
 
   echo "Install Elasticsearch" && \
   /bin/bash -c "wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -" && \
