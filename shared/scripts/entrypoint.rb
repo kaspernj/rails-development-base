@@ -16,12 +16,13 @@ File.chmod(0600, "/home/dev/.ssh/authorized_keys") if File.exists?("/home/dev/.s
 File.chmod(0600, "/home/dev/.ssh/config") if File.exists?("/home/dev/.ssh/config")
 
 puts "Installing SSHD config"
-File.unlink("/etc/ssh/sshd_config") if File.exists?("/etc/ssh/sshd_config")
 
 unless File.exists?("/shared/ssh/sshd_config")
   puts "Copying sample SSHD config since none exists"
-  FileUtils.copy("/shared/ssh/sshd_config.example", "/shared/ssh/sshd_config")
+  FileUtils.copy("/etc/ssh/sshd_config.original", "/shared/ssh/sshd_config")
 end
+
+File.unlink("/etc/ssh/sshd_config") if File.exists?("/etc/ssh/sshd_config")
 
 unless File.exists?("/shared/ssh/config")
   puts "Copying sample SSH config since none exists"
