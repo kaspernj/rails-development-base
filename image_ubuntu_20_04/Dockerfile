@@ -66,6 +66,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb firefox && \
   apt-get clean && \
 
+# ActiveStorage preview stuff
+  apt-get update && apt-get install -y ffmpeg libpoppler-glib-dev libvips42 poppler-utils && \
+
 # Install RVM
   apt-get install -y --force-yes dirmngr && \
   su dev -c "gpg --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB" && \
@@ -115,6 +118,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.5" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.6" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.7" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.8" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.9" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.0" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.1" && \

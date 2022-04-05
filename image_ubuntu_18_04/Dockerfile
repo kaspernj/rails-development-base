@@ -40,7 +40,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   mkdir /var/run/sshd && \
 
   echo "Install Heroku CLI" && \
-  echo "Install Heroku CLI" && \
   curl https://cli-assets.heroku.com/install-ubuntu.sh | sh && \
 
   echo "Install Java" && \
@@ -64,6 +63,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   libxslt-dev libxml2-dev libmysqlclient-dev libmagick++-dev imagemagick \
   libsqlite3-dev sqlite3 libpq-dev qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base \
   gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb && \
+
+# ActiveStorage preview stuff
+  apt-get update && apt-get install -y ffmpeg libpoppler-glib-dev libvips42 poppler-utils && \
 
   echo "Install RVM" && \
   apt-get install -y --force-yes dirmngr && \
@@ -104,6 +106,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.5" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.6" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.7" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.8" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.9" && \
 
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
 
