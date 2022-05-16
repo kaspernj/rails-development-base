@@ -1,12 +1,32 @@
-version: "3"
+version: "2.3"
 services:
   web:
-    image: "kaspernj/rails-development-base-ubuntu-18-04"
+    image: "kaspernj/rails-development-base-ubuntu-20-04"
+    depends_on:
+      - mariadb
+      - postgres
+      - redis
+    mem_limit: 4G
     ports:
       - "38022:22"
+    restart: unless-stopped
     volumes:
-      - "/path/shared:/shared"
-      - "development:/home/dev/Development"
+      - "./shared:/shared"
+      - "homedev:/home/dev"
+  mariadb:
+    image: "mariadb:latest"
+    environment:
+      MARIADB_DATABASE: "database-name"
+      MARIADB_ROOT_HOST: "%"
+      MARIADB_ROOT_PASSWORD: topsecret
+      MARIADB_USER: dev
+      MARIADB_PASSWORD: secret
+    expose:
+      - 3306
+    mem_limit: 4G
+    restart: unless-stopped
+    volumes:
+      - mariadb:/var/lib/mysql
   postgres:
     image: "postgres"
     expose:
@@ -15,15 +35,20 @@ services:
       POSTGRES_USER: "username"
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "database-name"
+    mem_limit: 4G
+    restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
   redis:
     image: "redis"
     expose:
       - 6379
+    mem_limit: 2G
+    restart: unless-stopped
     volumes:
       - redis:/var/lib/redis/data
 volumes:
-  development:
+  homedev:
+  mariadb:
   redis:
   postgres:

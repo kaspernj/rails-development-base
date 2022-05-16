@@ -1,9 +1,14 @@
 docker-compose.yml
+home-dev
+mariadb-var-lib
+mysql-var-lib
 mount_sshfs.sh
-shared/config.rb
+postgres-var-lib
+redis-var-lib
 shared/profile
 shared/log/last_startup
 shared/ssh/authorized_keys
 shared/ssh/config
+shared/ssh/sshd_config
 ssh.sh
 ssh_with_forwards.sh
