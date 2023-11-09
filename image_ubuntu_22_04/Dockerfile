@@ -51,7 +51,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get update && apt-get install -y --force-yes oracle-java17-installer && apt-get clean && \
 
   echo "Install NodeJS" && \
-  curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && \
+  curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \
   apt-get update && apt-get install -y --force-yes nodejs && \
 
   echo "Install Yarn" && \
@@ -80,62 +80,12 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 # RUN apt-get remove --purge -y libssl-dev && apt-get autoremove -y
 
 # Rubies with normal SSL libs
-  RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs enable" && \
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.1 1.9.2 1.9.3 && rvm cleanup all"
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs disable"
 
-# Rubies
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.2.3 2.2.4 2.2.5 2.2.6 2.2.7 2.2.8 && rvm cleanup all"
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.1 && rvm cleanup all"
+# Auto install Rubies
+COPY .rvmrc /home/build/.rvmrc
 
-# Test that SSL is working
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm use 2.3.1 && gem install specific_install && gem specific_install https://github.com/kaspernj/stripe_model_callbacks.git"
-
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.3.2 2.3.3 2.3.4 2.3.5 2.3.6 && rvm cleanup all"
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.0" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.1" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.2" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.3" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.4" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.5" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.4.6" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.0" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.1" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.2" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.3" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.4" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.5" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.6" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.7" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.8" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.5.9" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.0" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.1" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.2" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.3" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.4" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.5" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.6" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.7" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.8" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.6.9" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.0" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.1" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.2" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.3" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.4" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.0.0" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.0.1" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.0.2" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.0.3" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.1.0" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.1.1" && \
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
-
-  echo "Install Chrome" && \
+RUN echo "Install Chrome" && \
   apt-get install -y --force-yes libxss1 libappindicator1 libindicator7 && \
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN dpkg -i google-chrome*.deb; exit 0
