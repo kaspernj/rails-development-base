@@ -19,7 +19,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get clean && \
 
 # Install base apps and packages
-  apt-get update && apt-get install -y --force-yes debfoster firefox-geckodriver git gitg nano \
+  apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
   cron openssh-server regexxer ruby ruby-dev git-core screen \
   sudo thunar && \
   apt-get clean && \
@@ -62,7 +62,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   openssl libssl-dev zlib1g zlib1g-dev libyaml-dev git-core curl gawk g++ gcc make \
   libc6-dev libreadline6-dev libgdbm-dev libncurses5-dev libtool libffi-dev \
   libxslt-dev libxml2-dev libmysqlclient-dev libmagick++-dev imagemagick \
-  libsqlite3-dev sqlite3 libpq-dev qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base \
+  libsqlite3-dev sqlite3 libpq-dev libqt5webkit5-dev gstreamer1.0-plugins-base \
   gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb firefox && \
   apt-get clean && \
 
@@ -72,7 +72,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 # Install RVM
   apt-get install -y --force-yes dirmngr && \
   su dev -c "gpg --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB" && \
-  su dev -c "curl -sSL https://get.rvm.io | bash" && \
+  su dev -c "curl -sSL https://get.rvm.io | bash"
 
 # Rubies with RVM SSL libs
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs enable"
@@ -80,7 +80,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 # RUN apt-get remove --purge -y libssl-dev && apt-get autoremove -y
 
 # Rubies with normal SSL libs
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs disable" && \
+  RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs enable" && \
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 1.9.1 1.9.2 1.9.3 && rvm cleanup all"
 
 # Rubies
