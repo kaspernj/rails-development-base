@@ -72,7 +72,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 # Install RVM
   apt-get install -y --force-yes dirmngr && \
   su dev -c "gpg --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB" && \
-  su dev -c "curl -sSL https://get.rvm.io | bash"
+  su dev -c "curl -sSL https://get.rvm.io | bash" && \
 
 # Rubies with RVM SSL libs
 # RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs enable"
