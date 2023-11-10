@@ -7,6 +7,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
 
+# Auto install Rubies
+ADD .rvmrc /home/dev/.rvmrc
+
 RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get update && apt-get install -y --force-yes apt-utils wget curl && apt-get clean && \
 
@@ -26,6 +29,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
   echo "Configure dev user" && \
   /usr/sbin/useradd -s /bin/bash -m dev && \
+  chown dev:dev -R /home/dev && \
 
 # Use auth keys to access SSH in shared/ssh/authorized_keys instead of a password
 #   echo "dev:password" | chpasswd && \
@@ -74,22 +78,11 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   su dev -c "gpg --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB" && \
   su dev -c "curl -sSL https://get.rvm.io | bash" && \
 
-# Rubies with RVM SSL libs
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs enable"
-# RUN su dev -c "source /home/dev/.rvm/scripts/rvm && rvm pkg install openssl"
-# RUN apt-get remove --purge -y libssl-dev && apt-get autoremove -y
-
-# Rubies with normal SSL libs
-  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm autolibs disable"
-
-# Auto install Rubies
-COPY .rvmrc /home/build/.rvmrc
-
-RUN echo "Install Chrome" && \
+  echo "Install Chrome" && \
   apt-get install -y --force-yes libxss1 libappindicator1 libindicator7 && \
-  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN dpkg -i google-chrome*.deb; exit 0
-RUN apt-get install -f -y --force-yes && \
+  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+  /bin/bash -c "dpkg -i google-chrome*.deb; exit 0" && \
+  apt-get install -f -y --force-yes && \
   apt-get clean && \
   rm google-chrome-stable_current_amd64.deb && \
 
