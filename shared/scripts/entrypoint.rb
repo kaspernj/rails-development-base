@@ -10,6 +10,11 @@ unless File.exists?("/home/dev/.ssh")
   system("find", "/home/dev-sample/", "-mindepth", "1", "-maxdepth", "1", "-exec", "cp", "-rp", "{}", "/home/dev/", ";")
 end
 
+unless File.exists?("/shared/ssh/authorized_keys")
+  puts "Copying sample authorized_keys since none exists"
+  FileUtils.copy("/shared/ssh/authorized_keys.example", "/shared/ssh/authorized_keys")
+end
+
 puts "Fixing SSH permissions"
 FileUtils.chown("dev", "dev", ["/home/dev/.ssh/authorized_keys", "/home/dev/.ssh/config"])
 File.chmod(0600, "/home/dev/.ssh/authorized_keys") if File.exists?("/home/dev/.ssh/authorized_keys")
