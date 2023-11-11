@@ -126,13 +126,17 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.2" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.3" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.4" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.5" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 2.7.6" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.0.0" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.0.1" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.0.2" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.0.3" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.0.4" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.1.0" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.1.1" && \
+  su dev -c "source /home/dev/.rvm/scripts/rvm && rvm install 3.1.2" && \
   su dev -c "source /home/dev/.rvm/scripts/rvm && rvm cleanup all" && \
 
   echo "Install Chrome" && \
