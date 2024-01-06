@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
@@ -6,7 +6,6 @@ ENV LANG en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
-ADD check_vips_heic_support.rb /usr/local/bin/check_vips_heic_support.rb
 
 # Auto install Rubies
 ADD .rvmrc /home/dev/.rvmrc
@@ -23,7 +22,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get clean && \
 
 # Install base apps and packages
-  apt-get update && apt-get install -y --force-yes debfoster firefox-geckodriver git gitg nano \
+  apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
   cron openssh-server regexxer ruby ruby-dev git-core screen \
   sudo thunar && \
   apt-get clean && \
@@ -56,7 +55,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get update && apt-get install -y --force-yes oracle-java17-installer && apt-get clean && \
 
   echo "Install NodeJS" && \
-  curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && \
+  curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \
   apt-get update && apt-get install -y --force-yes nodejs && \
 
   echo "Install Yarn" && \
@@ -67,12 +66,12 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   openssl libssl-dev zlib1g zlib1g-dev libyaml-dev git-core curl gawk g++ gcc make \
   libc6-dev libreadline6-dev libgdbm-dev libncurses5-dev libtool libffi-dev \
   libxslt-dev libxml2-dev libmysqlclient-dev libmagick++-dev imagemagick \
-  libsqlite3-dev sqlite3 libpq-dev qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base \
+  libsqlite3-dev sqlite3 libpq-dev libqt5webkit5-dev gstreamer1.0-plugins-base \
   gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb firefox && \
   apt-get clean && \
 
 # ActiveStorage preview stuff
-  apt-get update && apt-get install -y ffmpeg libpoppler-glib-dev poppler-utils && \
+  apt-get update && apt-get install -y ffmpeg libpoppler-glib-dev libvips42 poppler-utils && \
 
 # Install RVM
   apt-get install -y --force-yes dirmngr && \
@@ -96,37 +95,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   mv -f ~/chromedriver /usr/local/bin/chromedriver && \
   chown root:root /usr/local/bin/chromedriver && \
   chmod 0755 /usr/local/bin/chromedriver && \
-
-  echo "Installing VIPS with HEIC support" && \
-  mkdir /root/libvipsbuild && \
-  cd /root/libvipsbuild && \
-  apt-get update && \
-  apt-get install -y \
-    swig libxml2-dev libfftw3-dev libmagickwand-dev libopenexr-dev liborc-0.4-0 liborc-dev liborc-0.4-dev gobject-introspection libgsf-1-dev libglib2.0-dev \
-    liborc-0.4-dev gtk-doc-tools libopenslide-dev libmatio-dev libgif-dev libwebp-dev libjpeg-turbo8-dev libexpat1-dev libvips-dev nasm \
-
-    libicu-dev libc++-dev libc++abi-dev glib-2.0-dev libexpat-dev librsvg2-dev libpng-dev libjpeg-dev libexif-dev liblcms2-dev libheif-dev \
-    libjpeg-turbo8-dev libgif-dev libpoppler-glib-dev libtiff-dev libfftw3-dev  libcfitsio-dev libwebp-dev libnifti-dev libopenslide-dev \
-    libgsf-1-dev libmatio-dev libmagickcore-dev libimagequant-dev && \
-
-  # Remove old version again to not mix up (but be sure that all its deps remain)
-  apt-get remove --purge -y libvips-dev libvips-doc libvips-tools libvips42 && \
-
-  # Download, compile and install
-  wget https://github.com/libvips/libvips/releases/download/v8.12.2/vips-8.12.2.tar.gz && \
-    tar xf vips-8.12.2.tar.gz && \
-    cd vips-8.12.2 && \
-    ./configure --libdir=/usr/lib --with-heif=yes && \
-    make && \
-    make install && \
-    cd /root && \
-    rm -rf /root/libvipsbuild && \
-
-  # Check that everything is working as expected
-  echo "Checking VIPS supported HEIC" && \
-  gem install ruby-vips && \
-  ruby /usr/local/bin/check_vips_heic_support.rb \
-  rm /usr/local/bin/check_vips_heic_support.rb && \
 
   echo "Preparing home dir to be moved into mount on first boot" && \
   mv /home/dev /home/dev-sample
