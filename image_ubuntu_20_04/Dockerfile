@@ -56,7 +56,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get update && apt-get install -y --force-yes oracle-java17-installer && apt-get clean && \
 
   echo "Install NodeJS" && \
-  curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && \
+  curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \
   apt-get update && apt-get install -y --force-yes nodejs && \
 
   echo "Install Yarn" && \
