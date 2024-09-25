@@ -6,9 +6,12 @@ services:
       - mariadb
       - postgres
       - redis
-    mem_limit: 4G
+    mem_limit: 8G
+    networks:
+      default:
+        ipv4_address: 38.0.0.2
     ports:
-      - "38022:22"
+      - "64022:22"
     restart: unless-stopped
     volumes:
       - "./shared:/shared"
@@ -16,14 +19,17 @@ services:
   mariadb:
     image: "mariadb:latest"
     environment:
-      MARIADB_DATABASE: "database-name"
-      MARIADB_ROOT_HOST: "%"
-      MARIADB_ROOT_PASSWORD: topsecret
-      MARIADB_USER: dev
-      MARIADB_PASSWORD: secret
+      MYSQL_DATABASE: "database-name"
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: topsecret
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: secret
     expose:
       - 3306
     mem_limit: 4G
+    networks:
+      default:
+        ipv4_address: 38.0.0.3
     restart: unless-stopped
     volumes:
       - mariadb:/var/lib/mysql
@@ -36,6 +42,9 @@ services:
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "database-name"
     mem_limit: 4G
+    networks:
+      default:
+        ipv4_address: 38.0.0.4
     restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
@@ -44,9 +53,18 @@ services:
     expose:
       - 6379
     mem_limit: 2G
+    networks:
+      default:
+        ipv4_address: 38.0.0.5
     restart: unless-stopped
     volumes:
       - redis:/var/lib/redis/data
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 38.0.0.0/16
 volumes:
   homedev:
   mariadb:
