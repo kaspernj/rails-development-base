@@ -1,7 +1,7 @@
 version: "2.3"
 services:
   web:
-    image: "kaspernj/rails-development-base-ubuntu-20-04"
+    image: "kaspernj/rails-development-base-ubuntu-22-04"
     depends_on:
       - mariadb
       - postgres
