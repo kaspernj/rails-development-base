@@ -26,9 +26,11 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   cron openssh-server regexxer ruby ruby-dev git-core screen \
   sudo thunar && \
   apt-get clean && \
+  deluser --remove-home ubuntu && \
+  groupdel ubuntu && \
 
   echo "Configure dev user" && \
-  /usr/sbin/useradd -s /bin/bash -m dev && \
+  /usr/sbin/useradd -u 1000 -g 1000 -s /bin/bash -m dev && \
   chown dev:dev -R /home/dev && \
 
 # Use auth keys to access SSH in shared/ssh/authorized_keys instead of a password
