@@ -42,17 +42,18 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   ln -s /shared/ssh/authorized_keys /home/dev/.ssh/authorized_keys && \
   mv /etc/ssh/sshd_config /etc/ssh/sshd_config.original && \
   ln -s /shared/ssh/sshd_config /etc/ssh/sshd_config && \
-  mkdir /var/run/sshd && \
 
-  echo "Install Heroku CLI" && \
-  curl https://cli-assets.heroku.com/install-ubuntu.sh | sh && \
+# Heroku CLI doesn't support 24.10 yet
+#  echo "Install Heroku CLI" && \
+#   curl https://cli-assets.heroku.com/install-ubuntu.sh | sh && \
 
-  echo "Install Java" && \
-  apt-get install -y --force-yes software-properties-common && apt-get clean && \
-  add-apt-repository ppa:linuxuprising/java && \
-  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-3 select true | debconf-set-selections" && \
-  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-3 seen true | debconf-set-selections" && \
-  apt-get update && apt-get install -y --force-yes oracle-java17-installer && apt-get clean && \
+# This repo doesn't have a 24.10 version yet
+#  echo "Install Java" && \
+#  apt-get install -y --force-yes software-properties-common && apt-get clean && \
+#  add-apt-repository ppa:linuxuprising/java && \
+#  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-3 select true | debconf-set-selections" && \
+#  /bin/bash -c "echo debconf shared/accepted-oracle-license-v1-3 seen true | debconf-set-selections" && \
+#  apt-get update && apt-get install -y --force-yes oracle-java17-installer && apt-get clean && \
 
   echo "Install NodeJS" && \
   curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \
@@ -79,7 +80,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   su dev -c "curl -sSL https://get.rvm.io | bash" && \
 
   echo "Install Chrome" && \
-  apt-get install -y --force-yes libxss1 libappindicator1 libindicator7 && \
+  apt-get install -y --force-yes libxss1 libindicator7 && \
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
   /bin/bash -c "dpkg -i google-chrome*.deb; exit 0" && \
   apt-get install -f -y --force-yes && \
