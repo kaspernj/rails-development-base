@@ -30,6 +30,10 @@ services:
       default:
         ipv4_address: 38.0.0.3
     restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: "262144"
+        hard: "262144"
     volumes:
       - mariadb:/var/lib/mysql
   postgres:
