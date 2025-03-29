@@ -42,6 +42,12 @@ if !File.exist?(etc_sshd_file_path) || File.size(shared_sshd_file_path) != File.
   FileUtils.copy(shared_sshd_file_path, etc_sshd_file_path)
 end
 
+if !File.exist?("/var/run/sshd")
+  puts "Missing /var/run/sshd - creating"
+  Dir.mkdir("/var/run/sshd")
+  system("chmod 0755 /var/run/sshd")
+end
+
 compose_environment_file_path = "/shared/profile"
 
 if File.exist?(compose_environment_file_path)
