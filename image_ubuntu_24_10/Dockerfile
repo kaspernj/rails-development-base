@@ -1,11 +1,12 @@
 FROM ubuntu:24.10
 
-ENV LANGUAGE en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
+ADD apt-preferences-d-firefox /etc/apt/preferences.d/mozilla-firefox
 
 # Auto install Rubies
 ADD .rvmrc /home/dev/.rvmrc
@@ -23,11 +24,17 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
 # Install base apps and packages
   apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
-  cron openssh-server regexxer ruby ruby-dev git-core screen \
+  cron openssh-server regexxer software-properties-common ruby ruby-dev git-core screen \
   sudo thunar && \
   apt-get clean && \
   deluser --remove-home ubuntu && \
 
+# Firefox
+  add-apt-repository ppa:mozillateam/ppa && \
+  apt-get update && apt-get install -y --force-yes firefox && \
+  apt-get clean && \
+
+# Dev user
   echo "Configure dev user" && \
   /usr/sbin/useradd -s /bin/bash -m dev && \
   chown dev:dev -R /home/dev && \
@@ -69,7 +76,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   libc6-dev libreadline6-dev libgdbm-dev libncurses5-dev libtool libffi-dev \
   libxslt-dev libxml2-dev libmysqlclient-dev libmagick++-dev imagemagick \
   libsqlite3-dev sqlite3 libpq-dev libqt5webkit5-dev gstreamer1.0-plugins-base \
-  gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb firefox && \
+  gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb firefox-geckodriver && \
   apt-get clean && \
 
 # ActiveStorage preview stuff
