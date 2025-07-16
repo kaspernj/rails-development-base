@@ -66,3 +66,9 @@ if File.exist?(compose_environment_file_path)
 end
 
 File.chmod(0600, "/etc/ssh/sshd_config")
+
+puts "Starting logging"
+system("/etc/init.d/syslog-ng start")
+
+puts "Running SSH daemon with debugging"
+system("/usr/sbin/sshd -ddd -D")
