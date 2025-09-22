@@ -71,4 +71,4 @@ puts "Starting logging"
 system("/etc/init.d/syslog-ng start")
 
 puts "Running SSH daemon with debugging"
-system("/usr/sbin/sshd -ddd -D")
+system("/usr/sbin/sshd -D")
