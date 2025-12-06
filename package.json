@@ -1,0 +1,24 @@
+{
+  "name": "rails-development-base",
+  "version": "1.0.0",
+  "description": "A Docker image for developing Rails applications inside a Docker container for security.",
+  "homepage": "https://github.com/kaspernj/rails-development-base#readme",
+  "bugs": {
+    "url": "https://github.com/kaspernj/rails-development-base/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaspernj/rails-development-base.git"
+  },
+  "license": "ISC",
+  "author": "kasper@diestoeckels.de",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "mariadb-console": "node mariadb-console.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.1"
+  }
+}

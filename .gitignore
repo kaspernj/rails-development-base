@@ -3,6 +3,7 @@ home-dev
 mariadb-var-lib
 mysql-var-lib
 mount_sshfs.sh
+node_modules
 postgres-var-lib
 redis-var-lib
 shared/profile
