@@ -67,7 +67,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get update && apt-get install -y --force-yes build-essential automake bison autoconf pkg-config \
   openssl libssl-dev zlib1g zlib1g-dev libyaml-dev git-core curl gawk g++ gcc make \
   libc6-dev libreadline6-dev libgdbm-dev libncurses5-dev libtool libffi-dev \
-  libxslt-dev libxml2-dev libmysqlclient-dev libmagick++-dev imagemagick \
+  libxslt-dev libxml2-dev libmysqlclient-dev mariadb-client libmagick++-dev imagemagick \
   libsqlite3-dev sqlite3 libpq-dev libqt5webkit5-dev gstreamer1.0-plugins-base \
   gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb firefox && \
   apt-get clean && \
