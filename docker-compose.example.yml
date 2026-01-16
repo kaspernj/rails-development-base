@@ -1,6 +1,6 @@
 services:
   web:
-    image: "kaspernj/rails-development-base-ubuntu-24-10"
+    image: "kaspernj/rails-development-base-ubuntu-25-10"
     depends_on:
       - mariadb
       - postgres
