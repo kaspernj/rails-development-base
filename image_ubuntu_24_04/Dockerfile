@@ -24,7 +24,17 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 # Install base apps and packages
   apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
   cron openssh-server regexxer ruby ruby-dev git-core screen \
-  sudo thunar && \
+  sudo thunar \
+
+# Codex tools
+  git ripgrep sed grep coreutils findutils diffutils \
+  jq curl ca-certificates \
+  less file procps \
+  tar gzip bzip2 xz-utils unzip zip \
+  build-essential make pkg-config \
+  python3 python3-pip \
+  openssh-client rsync tree fd-find bat && \
+
   apt-get clean && \
   deluser --remove-home ubuntu && \
 

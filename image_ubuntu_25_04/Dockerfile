@@ -27,7 +27,16 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   cron openssh-server regexxer software-properties-common ruby ruby-dev git-core screen \
   sudo thunar && \
   apt-get clean && \
-  deluser --remove-home ubuntu && \
+  deluser --remove-home ubuntu \
+
+# Codex tools
+  git ripgrep sed grep coreutils findutils diffutils \
+  jq curl ca-certificates \
+  less file procps \
+  tar gzip bzip2 xz-utils unzip zip \
+  build-essential make pkg-config \
+  python3 python3-pip \
+  openssh-client rsync tree fd-find bat && \
 
 # Firefox
   add-apt-repository ppa:mozillateam/ppa && \
