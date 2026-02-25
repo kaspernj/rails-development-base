@@ -58,6 +58,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \
   apt-get update && apt-get install -y --force-yes nodejs && \
 
+  echo "Install latest npm and Codex" && \
+  npm install --global npm @openai/codex && \
+
   echo "Install Yarn" && \
   npm install --global yarn && \
 

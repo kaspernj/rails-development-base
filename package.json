@@ -16,6 +16,7 @@
   "main": "index.js",
   "scripts": {
     "mariadb-console": "node mariadb-console.js",
+    "mariadb-create-user": "node mariadb-create-user.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
