@@ -23,8 +23,18 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
 # Install base apps and packages
   apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
-  cron openssh-server regexxer ruby ruby-dev git-core screen \
-  sudo thunar && \
+  cron gh openssh-server regexxer ruby ruby-dev git-core screen \
+  sudo thunar \
+
+# Codex tools
+  git ripgrep sed grep coreutils findutils diffutils \
+  gh jq curl ca-certificates \
+  less file procps \
+  tar gzip bzip2 xz-utils unzip zip \
+  build-essential make pkg-config \
+  python3 python3-pip \
+  openssh-client rsync tree fd-find bat && \
+
   apt-get clean && \
 
   echo "Configure dev user" && \
@@ -57,6 +67,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   echo "Install NodeJS" && \
   curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \
   apt-get update && apt-get install -y --force-yes nodejs && \
+
+  echo "Install latest npm and Codex" && \
+  npm install --global npm @openai/codex && \
 
   echo "Install Yarn" && \
   npm install --global yarn && \
