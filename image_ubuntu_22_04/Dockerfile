@@ -23,7 +23,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
 # Install base apps and packages
   apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
-  cron openssh-server regexxer ruby ruby-dev git-core screen \
+  cron gh openssh-server regexxer ruby ruby-dev git-core screen \
   sudo thunar && \
   apt-get clean && \
 

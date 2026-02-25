@@ -28,7 +28,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
 # Codex tools
   git ripgrep sed grep coreutils findutils diffutils \
-  jq curl ca-certificates \
+  gh jq curl ca-certificates \
   less file procps \
   tar gzip bzip2 xz-utils unzip zip \
   build-essential make pkg-config \
