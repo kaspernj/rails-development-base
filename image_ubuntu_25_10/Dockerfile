@@ -30,7 +30,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 # Codex tools
   git ripgrep sed grep coreutils findutils diffutils \
   gh jq curl ca-certificates \
-  less file procps \
+  less file procps iproute2 \
   tar gzip bzip2 xz-utils unzip zip \
   build-essential make pkg-config \
   python3 python3-pip \

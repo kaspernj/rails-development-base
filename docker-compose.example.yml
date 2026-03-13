@@ -62,6 +62,33 @@ services:
     restart: unless-stopped
     volumes:
       - redis:/var/lib/redis/data
+  docker_server:
+    image: "docker:dind"
+    command: dockerd-entrypoint.sh --group 1000 --tlsverify --tlscacert=/docker-test-certificates/tlscacert.pem --tlscert=/docker-test-certificates/tlscert.pem --tlskey=/docker-test-certificates/tlskey.pem -H tcp://0.0.0.0:5676 --registry-mirror=http://registry-cache:5000 --insecure-registry=registry-cache:5000
+    expose:
+      - 5676
+    networks:
+      default:
+        ipv4_address: 38.0.0.6
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - docker:/var/lib/docker
+      - "./shared/docker-test-certificates:/docker-test-certificates"
+  registry-cache:
+    image: registry:3
+    restart: unless-stopped
+    environment:
+      REGISTRY_PROXY_REMOTEURL: https://registry-1.docker.io
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
+      REGISTRY_STORAGE_DELETE_ENABLED: "true"
+      REGISTRY_LOG_LEVEL: info
+      OTEL_TRACES_EXPORTER: none
+    volumes:
+      - ./registry-data:/var/lib/registry
+    networks:
+      peakflow-builder:
+        ipv4_address: 6.0.0.9
 networks:
   default:
     ipam:
