@@ -87,7 +87,7 @@ services:
     volumes:
       - ./registry-data:/var/lib/registry
     networks:
-      peakflow-builder:
+      default:
         ipv4_address: 6.0.0.9
 networks:
   default:
