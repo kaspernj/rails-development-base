@@ -79,10 +79,11 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \
   apt-get update && apt-get install -y --force-yes nodejs && \
 
-  echo "Install latest npm and Codex" && \
+  echo "Install latest npm and Codex CLI" && \
   npm install --global npm @openai/codex && \
-  echo "Install Claude Code" && \
-  su dev -c 'curl -fsSL https://claude.ai/install.sh | bash' && \
+  echo "Install Claude CLI via Anthropic's native installer" && \
+  su dev -c "curl -fsSL https://claude.ai/install.sh | bash -s latest" && \
+  ln -sf /home/dev/.local/bin/claude /usr/local/bin/claude && \
 
   echo "Install Yarn" && \
   npm install --global yarn && \

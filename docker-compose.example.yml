@@ -15,12 +15,12 @@ services:
     volumes:
       - "./shared:/shared"
       - "homedev:/home/dev"
-      - "${HOME}/.codex/AGENTS.md:/home/dev/.codex/AGENTS.md"
-      - "${HOME}/.codex/skills:/home/dev/.codex/skills"
-      - "${HOME}/.codex/AGENTS.md:/home/dev/.claude/CLAUDE.md"
-      - "${HOME}/.codex/skills:/home/dev/.claude/skills"
-      - "${HOME}/.config/claude/agents:/home/dev/.claude/agents"
-      - "${HOME}/.config/claude/agents:/home/dev/.config/claude/agents"
+      - "${HOST_HOME}/.codex/AGENTS.md:/home/dev/.codex/AGENTS.md"
+      - "${HOST_HOME}/.codex/skills:/home/dev/.codex/skills"
+      - "${HOST_HOME}/.codex/AGENTS.md:/home/dev/.claude/CLAUDE.md"
+      - "${HOST_HOME}/.codex/skills:/home/dev/.claude/skills"
+      - "${HOST_HOME}/.config/claude/agents:/home/dev/.claude/agents"
+      - "${HOST_HOME}/.config/claude/agents:/home/dev/.config/claude/agents"
   mariadb:
     image: "mariadb:latest"
     environment:

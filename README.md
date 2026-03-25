@@ -20,6 +20,8 @@ sh build.sh
 
 Maintained Ubuntu images in this repo currently install both `codex` and `claude`. `codex` is installed from npm, while `claude` uses Anthropic's native installer. These images also include companion CLI tools used by those workflows such as `git`, `gh`, `glab`, `ripgrep`, and `ss`.
 
+For the Codex and Claude host mounts in the compose files, copy `.env.example` to `.env` and set `HOST_HOME` to the host user's home directory.
+
 
 ## Install
 
