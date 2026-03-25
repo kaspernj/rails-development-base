@@ -3,6 +3,7 @@ FROM ubuntu:24.04
 ENV LANGUAGE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
+ENV PATH=/home/dev/.local/bin:$PATH
 ENV DEBIAN_FRONTEND=noninteractive
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
@@ -28,7 +29,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
 # Codex tools
   git ripgrep sed grep coreutils findutils diffutils \
-  gh jq curl ca-certificates \
+  gh glab jq curl ca-certificates \
   less file procps iproute2 \
   tar gzip bzip2 xz-utils unzip zip \
   build-essential make pkg-config \
@@ -72,6 +73,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
   echo "Install latest npm and Codex" && \
   npm install --global npm @openai/codex && \
+  echo "Install Claude Code" && \
+  su dev -c 'curl -fsSL https://claude.ai/install.sh | bash' && \
 
   echo "Install Yarn" && \
   npm install --global yarn && \
