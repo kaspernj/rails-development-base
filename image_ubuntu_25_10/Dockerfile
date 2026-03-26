@@ -32,7 +32,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   git ripgrep sed grep coreutils findutils diffutils \
   gh glab jq curl ca-certificates \
   less file procps iproute2 \
-  tar gzip bzip2 xz-utils unzip zip \
+  tar gzip bzip2 xz-utils unzip zip bubblewrap \
   build-essential make pkg-config \
   python3 python3-pip \
   openssh-client rsync tree fd-find bat && \
@@ -50,6 +50,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   echo "Configure dev user" && \
   /usr/sbin/useradd -s /bin/bash -m dev && \
   chown dev:dev -R /home/dev && \
+  /bin/bash -lc 'echo '\''export PATH="$HOME/.local/bin:$PATH"'\'' >> /home/dev/.profile' && \
+  chown dev:dev /home/dev/.profile && \
 
 # Use auth keys to access SSH in shared/ssh/authorized_keys instead of a password
 #   echo "dev:password" | chpasswd && \
@@ -79,8 +81,11 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \
   apt-get update && apt-get install -y --force-yes nodejs && \
 
-  echo "Install latest npm and Codex CLI" && \
-  npm install --global npm @openai/codex && \
+  echo "Install latest npm" && \
+  npm install --global npm && \
+  echo "Install Codex CLI for dev user" && \
+  su dev -c "mkdir -p /home/dev/.local" && \
+  su dev -c "NPM_CONFIG_PREFIX=/home/dev/.local npm install --global @openai/codex" && \
   echo "Install Claude CLI via Anthropic's native installer" && \
   su dev -c "curl -fsSL https://claude.ai/install.sh | bash -s latest" && \
   ln -sf /home/dev/.local/bin/claude /usr/local/bin/claude && \
