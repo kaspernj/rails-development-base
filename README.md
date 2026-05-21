@@ -39,6 +39,21 @@ nano shared/ssh/authorized_keys
 It is advised not to set up any port forwarding other than SSH, and then forward the ports to your local machine for extra security.
 
 
+## Prune Docker DinD
+
+The compose setup includes a Docker-in-Docker service named `docker_server`. To prune unused containers, networks, images, build cache, and volumes inside that DinD daemon:
+
+```bash
+./docker_server_prune.sh
+```
+
+To preserve unused DinD volumes while pruning everything else, pass `--no-volumes`:
+
+```bash
+./docker_server_prune.sh --no-volumes
+```
+
+
 ## Mount your project on your local machine
 
 First install SSHFS
