@@ -2,9 +2,12 @@ services:
   web:
     image: "kaspernj/rails-development-base-ubuntu-24-10"
     depends_on:
-      - mariadb
-      - postgres
-      - redis
+      mariadb:
+        condition: service_healthy
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
     mem_limit: 8G
     networks:
       default:
@@ -17,6 +20,9 @@ services:
       - "homedev:/home/dev"
   mariadb:
     image: "mariadb:latest"
+    command:
+      - mariadbd
+      - --max-connections=1000
     environment:
       MYSQL_DATABASE: "database-name"
       MYSQL_ROOT_HOST: "%"
@@ -26,6 +32,16 @@ services:
     expose:
       - 3306
     mem_limit: 4G
+    healthcheck:
+      test:
+        - CMD
+        - healthcheck.sh
+        - --connect
+        - --innodb_initialized
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       default:
         ipv4_address: 38.0.0.3
