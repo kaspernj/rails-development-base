@@ -18,6 +18,10 @@ By using a combination of Docker, SSH, SSHFS, XQuartz, Gitg and Regexxer this ca
 sh build.sh
 ```
 
+Maintained Ubuntu images in this repo currently install both `codex` and `claude`. `codex` is installed from npm, while `claude` uses Anthropic's native installer. These images also include companion CLI tools used by those workflows such as `git`, `gh`, `glab`, `ripgrep`, and `ss`.
+
+For the Codex and Claude host mounts in the compose files, copy `.env.example` to `.env` and set `HOST_HOME` to the host user's home directory.
+
 
 ## Install
 
@@ -33,6 +37,21 @@ nano shared/ssh/authorized_keys
 ```
 
 It is advised not to set up any port forwarding other than SSH, and then forward the ports to your local machine for extra security.
+
+
+## Prune Docker DinD
+
+The compose setup includes a Docker-in-Docker service named `docker_server`. To prune unused containers, networks, images, build cache, and volumes inside that DinD daemon:
+
+```bash
+./docker_server_prune.sh
+```
+
+To preserve unused DinD volumes while pruning everything else, pass `--no-volumes`:
+
+```bash
+./docker_server_prune.sh --no-volumes
+```
 
 
 ## Mount your project on your local machine
@@ -91,4 +110,3 @@ ssh ip-of-server -l dev -X
 cd project
 regexxer
 ```
-

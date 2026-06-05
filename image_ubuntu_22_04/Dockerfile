@@ -3,6 +3,7 @@ FROM ubuntu:22.04
 ENV LANGUAGE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
+ENV PATH=/home/dev/.local/bin:$PATH
 ENV DEBIAN_FRONTEND=noninteractive
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
@@ -23,13 +24,25 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
 # Install base apps and packages
   apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
-  cron openssh-server regexxer ruby ruby-dev git-core screen \
-  sudo thunar && \
+  cron gh openssh-server regexxer ruby ruby-dev git-core screen \
+  sudo thunar \
+
+# Codex tools
+  git ripgrep sed grep coreutils findutils diffutils \
+  gh glab jq curl ca-certificates \
+  less file procps iproute2 \
+  tar gzip bzip2 xz-utils unzip zip bubblewrap \
+  build-essential make pkg-config \
+  python3 python3-pip \
+  openssh-client rsync tree fd-find bat && \
+
   apt-get clean && \
 
   echo "Configure dev user" && \
   /usr/sbin/useradd -s /bin/bash -m dev && \
   chown dev:dev -R /home/dev && \
+  /bin/bash -lc 'echo '\''export PATH="$HOME/.local/bin:$PATH"'\'' >> /home/dev/.profile' && \
+  chown dev:dev /home/dev/.profile && \
 
 # Use auth keys to access SSH in shared/ssh/authorized_keys instead of a password
 #   echo "dev:password" | chpasswd && \
@@ -58,6 +71,15 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - && \
   apt-get update && apt-get install -y --force-yes nodejs && \
 
+  echo "Install latest npm" && \
+  npm install --global npm && \
+  echo "Install Codex CLI for dev user" && \
+  su dev -c "mkdir -p /home/dev/.local" && \
+  su dev -c "NPM_CONFIG_PREFIX=/home/dev/.local npm install --global @openai/codex" && \
+  echo "Install Claude CLI via Anthropic's native installer" && \
+  su dev -c "curl -fsSL https://claude.ai/install.sh | bash -s latest" && \
+  ln -sf /home/dev/.local/bin/claude /usr/local/bin/claude && \
+
   echo "Install Yarn" && \
   npm install --global yarn && \
 
@@ -65,7 +87,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get update && apt-get install -y --force-yes build-essential automake bison autoconf pkg-config \
   openssl libssl-dev zlib1g zlib1g-dev libyaml-dev git-core curl gawk g++ gcc make \
   libc6-dev libreadline6-dev libgdbm-dev libncurses5-dev libtool libffi-dev \
-  libxslt-dev libxml2-dev libmysqlclient-dev libmagick++-dev imagemagick \
+  libxslt-dev libxml2-dev libmysqlclient-dev mariadb-client libmagick++-dev imagemagick \
   libsqlite3-dev sqlite3 libpq-dev libqt5webkit5-dev gstreamer1.0-plugins-base \
   gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb firefox && \
   apt-get clean && \

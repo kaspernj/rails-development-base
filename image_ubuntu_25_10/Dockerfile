@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM ubuntu:25.10
 
 ENV LANGUAGE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
@@ -7,6 +7,7 @@ ENV PATH=/home/dev/.local/bin:$PATH
 ENV DEBIAN_FRONTEND=noninteractive
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
+ADD apt-preferences-d-firefox /etc/apt/preferences.d/mozilla-firefox
 
 # Auto install Rubies
 ADD .rvmrc /home/dev/.rvmrc
@@ -24,7 +25,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
 # Install base apps and packages
   apt-get update && apt-get install -y --force-yes debfoster git gitg nano \
-  cron openssh-server regexxer ruby ruby-dev git-core screen \
+  cron openssh-server regexxer software-properties-common ruby ruby-dev git-core screen \
   sudo thunar \
 
 # Codex tools
@@ -39,6 +40,13 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get clean && \
   deluser --remove-home ubuntu && \
 
+
+# Firefox
+  add-apt-repository ppa:mozillateam/ppa && \
+  apt-get update && apt-get install -y --force-yes firefox && \
+  apt-get clean && \
+
+# Dev user
   echo "Configure dev user" && \
   /usr/sbin/useradd -s /bin/bash -m dev && \
   chown dev:dev -R /home/dev && \
@@ -57,11 +65,11 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   mv /etc/ssh/sshd_config /etc/ssh/sshd_config.original && \
   ln -s /shared/ssh/sshd_config /etc/ssh/sshd_config && \
 
-# Heroku CLI doesn't support 24.04 yet
+# Heroku CLI doesn't support 24.10 yet
 #  echo "Install Heroku CLI" && \
 #   curl https://cli-assets.heroku.com/install-ubuntu.sh | sh && \
 
-# This repo doesn't have a 24.04 version yet
+# This repo doesn't have a 24.10 version yet
 #  echo "Install Java" && \
 #  apt-get install -y --force-yes software-properties-common && apt-get clean && \
 #  add-apt-repository ppa:linuxuprising/java && \
@@ -90,8 +98,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   openssl libssl-dev zlib1g zlib1g-dev libyaml-dev git-core curl gawk g++ gcc make \
   libc6-dev libreadline6-dev libgdbm-dev libncurses5-dev libtool libffi-dev \
   libxslt-dev libxml2-dev libmysqlclient-dev mariadb-client libmagick++-dev imagemagick \
-  libsqlite3-dev sqlite3 libpq-dev libqt5webkit5-dev gstreamer1.0-plugins-base \
-  gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb firefox && \
+  libsqlite3-dev sqlite3 libpq-dev gstreamer1.0-plugins-base \
+  gstreamer1.0-tools gstreamer1.0-x libcurl4-openssl-dev xvfb firefox-geckodriver && \
   apt-get clean && \
 
 # ActiveStorage preview stuff
