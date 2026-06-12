@@ -1,10 +1,23 @@
 services:
   web:
-    image: "kaspernj/rails-development-base-ubuntu-25-10"
+    image: "kaspernj/rails-development-base-ubuntu-26-04"
     depends_on:
+      - docker_server
       - mariadb
       - postgres
       - redis
+    devices:
+      - "/dev/kvm:/dev/kvm"
+    device_cgroup_rules:
+      - "c 10:232 rwm"
+    group_add:
+      - "${HOST_KVM_GID:-109}"
+    healthcheck:
+      test: ["CMD-SHELL", "test -r /dev/kvm -a -w /dev/kvm"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     mem_limit: 8G
     networks:
       default:
@@ -21,14 +34,22 @@ services:
       - "${HOST_HOME}/.codex/skills:/home/dev/.claude/skills"
       - "${HOST_HOME}/.config/claude/agents:/home/dev/.claude/agents"
       - "${HOST_HOME}/.config/claude/agents:/home/dev/.config/claude/agents"
+
   mariadb:
     image: "mariadb:latest"
     environment:
-      MYSQL_DATABASE: "database-name"
-      MYSQL_ROOT_HOST: "%"
-      MYSQL_ROOT_PASSWORD: topsecret
-      MYSQL_USER: dev
-      MYSQL_PASSWORD: secret
+      MARIADB_AUTO_UPGRADE: "true"
+      MARIADB_DATABASE: "database-name"
+      MARIADB_ROOT_HOST: "%"
+      MARIADB_ROOT_PASSWORD: topsecret
+      MARIADB_USER: dev
+      MARIADB_PASSWORD: secret
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u root -p$$MARIADB_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     expose:
       - 3306
     mem_limit: 4G
@@ -42,6 +63,7 @@ services:
         hard: "262144"
     volumes:
       - mariadb:/var/lib/mysql
+
   postgres:
     image: "postgres"
     expose:
@@ -50,6 +72,12 @@ services:
       POSTGRES_USER: "username"
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "database-name"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
     mem_limit: 4G
     networks:
       default:
@@ -57,10 +85,17 @@ services:
     restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
+
   redis:
     image: "redis"
     expose:
       - 6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     mem_limit: 2G
     networks:
       default:
@@ -68,11 +103,18 @@ services:
     restart: unless-stopped
     volumes:
       - redis:/var/lib/redis/data
+
   docker_server:
     image: "docker:dind"
     command: dockerd-entrypoint.sh --group 1000 --tlsverify --tlscacert=/docker-test-certificates/tlscacert.pem --tlscert=/docker-test-certificates/tlscert.pem --tlskey=/docker-test-certificates/tlskey.pem -H tcp://0.0.0.0:5676 --registry-mirror=http://registry-cache:5000 --insecure-registry=registry-cache:5000
     expose:
       - 5676
+    healthcheck:
+      test: ["CMD-SHELL", "docker --host tcp://127.0.0.1:5676 --tlsverify --tlscacert=/docker-test-certificates/tlscacert.pem --tlscert=/docker-test-certificates/tlscert.pem --tlskey=/docker-test-certificates/tlskey.pem info >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
     networks:
       default:
         ipv4_address: 38.0.0.6
@@ -81,6 +123,7 @@ services:
     volumes:
       - docker:/var/lib/docker
       - "./shared/docker-test-certificates:/docker-test-certificates"
+
   registry-cache:
     image: registry:3
     restart: unless-stopped
@@ -90,18 +133,27 @@ services:
       REGISTRY_STORAGE_DELETE_ENABLED: "true"
       REGISTRY_LOG_LEVEL: info
       OTEL_TRACES_EXPORTER: none
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:5000/v2/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     volumes:
       - ./registry-data:/var/lib/registry
     networks:
       default:
-        ipv4_address: 6.0.0.9
+        ipv4_address: 38.0.0.9
+
 networks:
   default:
     ipam:
       driver: default
       config:
         - subnet: 38.0.0.0/16
+
 volumes:
+  docker:
   homedev:
   mariadb:
   redis:
