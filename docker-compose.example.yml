@@ -2,10 +2,14 @@ services:
   web:
     image: "kaspernj/rails-development-base-ubuntu-26-04"
     depends_on:
-      - docker_server
-      - mariadb
-      - postgres
-      - redis
+      docker_server:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     devices:
       - "/dev/kvm:/dev/kvm"
     device_cgroup_rules:
@@ -37,6 +41,9 @@ services:
 
   mariadb:
     image: "mariadb:latest"
+    command:
+      - mariadbd
+      - --max-connections=1000
     environment:
       MARIADB_AUTO_UPGRADE: "true"
       MARIADB_DATABASE: "database-name"
