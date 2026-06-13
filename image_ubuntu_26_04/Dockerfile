@@ -121,10 +121,13 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   echo "Install ChromeDriver" && \
   apt-get install -y --force-yes fonts-liberation unzip xdg-utils && \
   apt-get clean && \
-  wget -N http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip -P ~/ && \
-  unzip ~/chromedriver_linux64.zip -d ~/ && \
-  rm ~/chromedriver_linux64.zip && \
-  mv -f ~/chromedriver /usr/local/bin/chromedriver && \
+  CHROME_MAJOR="$(google-chrome --product-version | cut -d. -f1)" && \
+  CHROMEDRIVER_VERSION="$(curl -fsSL "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_MAJOR}")" && \
+  wget -N "https://storage.googleapis.com/chrome-for-testing-public/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip" -P ~/ && \
+  unzip ~/chromedriver-linux64.zip -d ~/ && \
+  rm ~/chromedriver-linux64.zip && \
+  mv -f ~/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
+  rm -rf ~/chromedriver-linux64 && \
   chown root:root /usr/local/bin/chromedriver && \
   chmod 0755 /usr/local/bin/chromedriver && \
 
