@@ -10,6 +10,18 @@ unless File.exist?("/home/dev/.ssh")
   system("find", "/home/dev-sample/", "-mindepth", "1", "-maxdepth", "1", "-exec", "cp", "-rp", "{}", "/home/dev/", ";")
 end
 
+[
+  "/home/dev/.codex",
+  "/home/dev/.claude",
+  "/home/dev/.gemini",
+  "/home/dev/.config",
+  "/home/dev/.config/claude",
+  "/home/dev/.config/opencode"
+].each do |config_dir_path|
+  FileUtils.mkdir_p(config_dir_path)
+  FileUtils.chown("dev", "dev", config_dir_path)
+end
+
 unless File.exist?("/shared/ssh/authorized_keys")
   puts "Copying sample authorized_keys since none exists"
   FileUtils.copy("/shared/ssh/authorized_keys.example", "/shared/ssh/authorized_keys")

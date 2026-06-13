@@ -85,7 +85,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   npm install --global npm && \
   echo "Install Codex CLI for dev user" && \
   su dev -c "mkdir -p /home/dev/.local" && \
-  su dev -c "NPM_CONFIG_PREFIX=/home/dev/.local npm install --global @openai/codex" && \
+  su dev -c "npm config set prefix /home/dev/.local" && \
+  su dev -c "npm install --global @openai/codex" && \
   echo "Install Claude CLI via Anthropic's native installer" && \
   su dev -c "curl -fsSL https://claude.ai/install.sh | bash -s latest" && \
   ln -sf /home/dev/.local/bin/claude /usr/local/bin/claude && \
