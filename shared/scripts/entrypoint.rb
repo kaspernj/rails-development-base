@@ -18,7 +18,8 @@ end
   "/home/dev/.config/claude",
   "/home/dev/.config/opencode"
 ].each do |config_dir_path|
-  FileUtils.mkdir_p(config_dir_path)
+  next unless File.directory?(config_dir_path)
+
   FileUtils.chown("dev", "dev", config_dir_path)
 end
 
