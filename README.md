@@ -25,6 +25,8 @@ For the Codex and Claude host mounts in the compose files, copy `.env.example` t
 
 ## Install
 
+The Ubuntu 24.04 and 26.04 images prepare `/home/dev-sample` from Ubuntu's default shell files and copy it into a new persistent `/home/dev` mount on first startup. Rebuilding an image does not replace files in an existing home mount, so user customizations remain intact.
+
 First customize your setup by copying the run script:
 ```bash
 cp run.sh run-my-project.sh

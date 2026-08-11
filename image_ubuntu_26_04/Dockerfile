@@ -10,7 +10,7 @@ ADD entrypoint.sh /usr/local/bin/entrypoint.sh
 ADD apt-preferences-d-firefox /etc/apt/preferences.d/mozilla-firefox
 
 # Auto install Rubies
-ADD .rvmrc /home/dev/.rvmrc
+COPY .rvmrc /tmp/dev.rvmrc
 
 RUN chmod +x /usr/local/bin/entrypoint.sh && \
   apt-get update && apt-get install -y --force-yes apt-utils wget curl && apt-get clean && \
@@ -49,6 +49,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 # Dev user
   echo "Configure dev user" && \
   /usr/sbin/useradd -s /bin/bash -m dev && \
+  mv /tmp/dev.rvmrc /home/dev/.rvmrc && \
   chown dev:dev -R /home/dev && \
   /bin/bash -lc 'echo '\''export PATH="$HOME/.local/bin:$PATH"'\'' >> /home/dev/.profile' && \
   chown dev:dev /home/dev/.profile && \
@@ -131,6 +132,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   rm -rf ~/chromedriver-linux64 && \
   chown root:root /usr/local/bin/chromedriver && \
   chmod 0755 /usr/local/bin/chromedriver && \
+
+  echo "Checking dev login shell defaults" && \
+  su dev -c 'TERM=xterm-256color /bin/bash -lic '\''test -n "$LS_COLORS" && alias ls | grep -q -- "--color=auto" && grep -Fq "\\033[01;32m" <<< "$PS1"'\''' && \
 
   echo "Preparing home dir to be moved into mount on first boot" && \
   mv /home/dev /home/dev-sample
