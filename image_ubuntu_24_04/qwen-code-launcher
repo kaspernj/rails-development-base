@@ -1,0 +1,88 @@
+#!/bin/sh
+set -eu
+set +x
+
+QWEN_NATIVE_BIN=/opt/qwen-code/bin/qwen
+
+case "${1:-}" in
+  --version|-v)
+    exec "${QWEN_NATIVE_BIN}" "$@"
+    ;;
+esac
+
+shared_dir=${QWEN_SHARED_CONFIG_DIR:-/opt/opencode-shared}
+prompts_dir=${QWEN_PROMPTS_DIR:-/opt/ai-prompts}
+system_defaults=${QWEN_CODE_SYSTEM_DEFAULTS_PATH:-${shared_dir}/qwen-code/system-defaults.json}
+
+read_required_file() {
+  file_path=$1
+  value_name=$2
+
+  if [ ! -f "${file_path}" ] || [ ! -r "${file_path}" ]; then
+    printf 'qwen: required %s file is missing or unreadable: %s\n' "${value_name}" "${file_path}" >&2
+    exit 1
+  fi
+
+  IFS= read -r file_value < "${file_path}" || [ -n "${file_value}" ]
+  if [ -z "${file_value}" ]; then
+    printf 'qwen: required %s file is empty: %s\n' "${value_name}" "${file_path}" >&2
+    exit 1
+  fi
+
+  printf '%s' "${file_value}"
+}
+
+ensure_context_link() {
+  link_path=$1
+  link_target=$2
+
+  if [ ! -e "${link_target}" ]; then
+    printf 'qwen: shared context target does not exist: %s\n' "${link_target}" >&2
+    exit 1
+  fi
+
+  if [ -L "${link_path}" ]; then
+    if [ "$(readlink "${link_path}")" != "${link_target}" ]; then
+      printf 'qwen: refusing to replace unrelated symlink: %s\n' "${link_path}" >&2
+      exit 1
+    fi
+    return
+  fi
+
+  if [ -e "${link_path}" ]; then
+    printf 'qwen: refusing to replace existing path: %s\n' "${link_path}" >&2
+    exit 1
+  fi
+
+  ln -s "${link_target}" "${link_path}"
+}
+
+if [ ! -x "${QWEN_NATIVE_BIN}" ]; then
+  printf 'qwen: native executable is missing: %s\n' "${QWEN_NATIVE_BIN}" >&2
+  exit 1
+fi
+
+if [ ! -f "${system_defaults}" ] || [ ! -r "${system_defaults}" ]; then
+  printf 'qwen: shared system defaults are missing or unreadable: %s\n' "${system_defaults}" >&2
+  exit 1
+fi
+
+FLEETLLM_BASE_URL=$(read_required_file "${shared_dir}/local/fleetllm-base-url" 'Fleet base URL')
+FLEETLLM_API_KEY=$(read_required_file "${shared_dir}/local/fleetllm-api-key" 'Fleet API key')
+APOCLLM_BASE_URL=$(read_required_file "${shared_dir}/local/apocllm-base-url" 'Apoc base URL')
+MORPHEUSLLM_BASE_URL=$(read_required_file "${shared_dir}/local/morpheusllm-base-url" 'Morpheus base URL')
+SWITCHLLM_BASE_URL=$(read_required_file "${shared_dir}/local/switchllm-base-url" 'Switch base URL')
+QWEN38_API_KEY=$(read_required_file "${shared_dir}/local/qwen38-api-key" 'direct Qwen3.8 API key')
+
+export FLEETLLM_BASE_URL FLEETLLM_API_KEY
+export APOCLLM_BASE_URL MORPHEUSLLM_BASE_URL SWITCHLLM_BASE_URL QWEN38_API_KEY
+export QWEN_CODE_SYSTEM_DEFAULTS_PATH="${system_defaults}"
+export QWEN_STREAM_MAX_LIFETIME_MS=0
+
+qwen_home=${QWEN_HOME:-${HOME}/.qwen}
+install -d -m 0700 "${qwen_home}"
+ensure_context_link "${qwen_home}/QWEN.md" "${prompts_dir}/AGENTS.md"
+ensure_context_link "${qwen_home}/skills" "${prompts_dir}/skills"
+ensure_context_link "${qwen_home}/agents" "${prompts_dir}/agents"
+
+exec "${QWEN_NATIVE_BIN}" "$@"

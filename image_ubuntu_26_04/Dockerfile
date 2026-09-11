@@ -1,5 +1,11 @@
 FROM ubuntu:26.04
 
+ARG CLAUDE_CODE_VERSION=2.1.236
+ARG CODEX_VERSION=0.153.4
+ARG KIMI_CODE_VERSION=0.41.0
+ARG OPENCODE_VERSION=1.18.29
+ARG QWEN_CODE_VERSION=0.23.3
+
 ENV LANGUAGE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
@@ -7,6 +13,7 @@ ENV PATH=/home/dev/.local/bin:$PATH
 ENV DEBIAN_FRONTEND=noninteractive
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
+ADD qwen-code-launcher /usr/local/bin/qwen
 ADD apt-preferences-d-firefox /etc/apt/preferences.d/mozilla-firefox
 
 # Auto install Rubies
@@ -30,7 +37,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
 # Codex tools
   git ripgrep sed grep coreutils findutils diffutils \
-  gh glab jq curl ca-certificates \
+  gh glab jq curl ca-certificates gnupg \
   less file procps iproute2 \
   tar gzip bzip2 xz-utils unzip zip bubblewrap \
   build-essential make pkg-config \
@@ -85,14 +92,37 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
   echo "Install latest npm" && \
   npm install --global npm && \
-  echo "Install Codex CLI for dev user" && \
-  su dev -c "mkdir -p /home/dev/.local" && \
-  su dev -c "npm config set prefix /home/dev/.local" && \
-  su dev -c "npm install --global @openai/codex" && \
-  echo "Install Claude CLI via Anthropic's native installer" && \
-  su dev -c "curl -fsSL https://claude.ai/install.sh | bash -s latest" && \
-  ln -sf /home/dev/.local/bin/claude /usr/local/bin/claude && \
-
+  echo "Install Claude Code from Anthropic's signed APT repository" && \
+  install -d -m 0755 /etc/apt/keyrings && \
+  curl -fsSL https://downloads.claude.ai/keys/claude-code.asc -o /etc/apt/keyrings/claude-code.asc && \
+  test "$(gpg --batch --show-keys --with-colons /etc/apt/keyrings/claude-code.asc | awk -F: '$1 == "fpr" { print $10; exit }')" = "31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE" && \
+  echo "deb [signed-by=/etc/apt/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/stable stable main" > /etc/apt/sources.list.d/claude-code.list && \
+  apt-get update && \
+  apt-get install -y --no-install-recommends "claude-code=${CLAUDE_CODE_VERSION}-1" && \
+  echo "Install Codex CLI via OpenAI's native installer" && \
+  curl -fsSL https://chatgpt.com/codex/install.sh -o /tmp/codex-install.sh && \
+  env CODEX_RELEASE="${CODEX_VERSION}" CODEX_NON_INTERACTIVE=1 CODEX_INSTALL_DIR=/usr/local/bin CODEX_HOME=/opt/codex sh /tmp/codex-install.sh && \
+  echo "Install Kimi Code CLI via Moonshot AI's native installer" && \
+  curl -fsSL https://code.kimi.com/kimi-code/install.sh -o /tmp/kimi-install.sh && \
+  env KIMI_VERSION="${KIMI_CODE_VERSION}" KIMI_INSTALL_DIR=/usr/local bash /tmp/kimi-install.sh && \
+  echo "Install OpenCode via its native installer" && \
+  install -d -m 0755 /opt/opencode && \
+  curl -fsSL https://opencode.ai/install -o /tmp/opencode-install.sh && \
+  env HOME=/opt/opencode PATH="/opt/opencode/.opencode/bin:${PATH}" bash /tmp/opencode-install.sh --version "${OPENCODE_VERSION}" && \
+  ln -sf /opt/opencode/.opencode/bin/opencode /usr/local/bin/opencode && \
+  echo "Install Qwen Code via its native standalone installer" && \
+  curl -fsSL https://qwen-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-qwen-standalone.sh -o /tmp/qwen-code-install.sh && \
+  env QWEN_INSTALL_ROOT=/opt/qwen-code QWEN_NO_MODIFY_PATH=1 bash /tmp/qwen-code-install.sh --method standalone --version "${QWEN_CODE_VERSION}" --source github && \
+  chmod 0755 /usr/local/bin/qwen && \
+  test "$(codex --version)" = "codex-cli ${CODEX_VERSION}" && \
+  test "$(claude --version)" = "${CLAUDE_CODE_VERSION} (Claude Code)" && \
+  test "$(kimi --version)" = "${KIMI_CODE_VERSION}" && \
+  test "$(opencode --version)" = "${OPENCODE_VERSION}" && \
+  test "$(qwen --version)" = "${QWEN_CODE_VERSION}" && \
+  rm -f /tmp/codex-install.sh /tmp/kimi-install.sh /tmp/opencode-install.sh /tmp/qwen-code-install.sh && \
+  echo "Verify shared AI CLIs as root and dev" && \
+  for cli in codex claude kimi opencode qwen; do resolved="$(command -v "$cli")" && case "$resolved" in /usr/local/bin/*|/usr/bin/*) ;; *) exit 1 ;; esac && "$cli" --version; done && \
+  su dev -c 'for cli in codex claude kimi opencode qwen; do resolved="$(command -v "$cli")" && case "$resolved" in /usr/local/bin/*|/usr/bin/*) ;; *) exit 1 ;; esac && "$cli" --version; done' && \
   echo "Install Yarn" && \
   npm install --global yarn && \
 
