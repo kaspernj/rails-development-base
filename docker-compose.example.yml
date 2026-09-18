@@ -38,6 +38,18 @@ services:
       - "${HOST_HOME}/.codex/skills:/home/dev/.claude/skills"
       - "${HOST_HOME}/.config/claude/agents:/home/dev/.claude/agents"
       - "${HOST_HOME}/.config/claude/agents:/home/dev/.config/claude/agents"
+      - type: bind
+        source: "${HOST_HOME}/Documents/opencode-shared"
+        target: /opt/opencode-shared
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: "${HOST_HOME}/Development/ai-prompts"
+        target: /opt/ai-prompts
+        read_only: true
+        bind:
+          create_host_path: false
 
   mariadb:
     image: "mariadb:latest"
