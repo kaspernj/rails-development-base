@@ -20,7 +20,12 @@ sh build.sh
 
 Maintained Ubuntu 22.04 and newer images in this repo currently install both `codex` and `claude`. `codex` is installed from npm, while `claude` uses Anthropic's native installer. These images also include companion CLI tools used by those workflows such as `git`, `gh`, `glab`, `ripgrep`, `bubblewrap`, and `ss`.
 
-For the Codex and Claude host mounts in the compose files, copy `.env.example` to `.env` and set `HOST_HOME` to the host user's home directory.
+For the coding-agent host mounts in the compose files, create a `.env` file and
+set `HOST_HOME` to the host user's home directory. Qwen Code expects
+the shared configuration repository at
+`${HOST_HOME}/Documents/opencode-shared` and the shared prompt repository at
+`${HOST_HOME}/Development/ai-prompts`; the example Compose file mounts both
+read-only and refuses to create missing source directories.
 
 
 ## Install

@@ -151,10 +151,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   mv -f ~/chromedriver /usr/local/bin/chromedriver && \
   chown root:root /usr/local/bin/chromedriver && \
   chmod 0755 /usr/local/bin/chromedriver && \
-
   echo "Checking dev login shell defaults" && \
   su dev -c 'TERM=xterm-256color /bin/bash -lic '\''test -n "$LS_COLORS" && alias ls | grep -q -- "--color=auto" && grep -Fq "\\033[01;32m" <<< "$PS1"'\''' && \
-
   echo "Preparing home dir to be moved into mount on first boot" && \
   mv /home/dev /home/dev-sample
 

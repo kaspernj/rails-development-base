@@ -12,7 +12,10 @@ esac
 
 shared_dir=${QWEN_SHARED_CONFIG_DIR:-/opt/opencode-shared}
 prompts_dir=${QWEN_PROMPTS_DIR:-/opt/ai-prompts}
-system_defaults=${QWEN_CODE_SYSTEM_DEFAULTS_PATH:-${shared_dir}/qwen-code/system-defaults.json}
+catalog=${QWEN_OPENCODE_CONFIG_PATH:-${shared_dir}/opencode.json}
+defaults_base=${QWEN_CODE_DEFAULTS_BASE_PATH:-${shared_dir}/qwen-code/defaults-base.json}
+defaults_renderer=${QWEN_CODE_DEFAULTS_RENDERER_PATH:-${shared_dir}/qwen-code/render-system-defaults.jq}
+custom_system_defaults=${QWEN_CODE_SYSTEM_DEFAULTS_PATH:-}
 
 read_required_file() {
   file_path=$1
@@ -62,11 +65,6 @@ if [ ! -x "${QWEN_NATIVE_BIN}" ]; then
   exit 1
 fi
 
-if [ ! -f "${system_defaults}" ] || [ ! -r "${system_defaults}" ]; then
-  printf 'qwen: shared system defaults are missing or unreadable: %s\n' "${system_defaults}" >&2
-  exit 1
-fi
-
 FLEETLLM_BASE_URL=$(read_required_file "${shared_dir}/local/fleetllm-base-url" 'Fleet base URL')
 FLEETLLM_API_KEY=$(read_required_file "${shared_dir}/local/fleetllm-api-key" 'Fleet API key')
 APOCLLM_BASE_URL=$(read_required_file "${shared_dir}/local/apocllm-base-url" 'Apoc base URL')
@@ -76,11 +74,40 @@ QWEN38_API_KEY=$(read_required_file "${shared_dir}/local/qwen38-api-key" 'direct
 
 export FLEETLLM_BASE_URL FLEETLLM_API_KEY
 export APOCLLM_BASE_URL MORPHEUSLLM_BASE_URL SWITCHLLM_BASE_URL QWEN38_API_KEY
-export QWEN_CODE_SYSTEM_DEFAULTS_PATH="${system_defaults}"
 export QWEN_STREAM_MAX_LIFETIME_MS=0
 
 qwen_home=${QWEN_HOME:-${HOME}/.qwen}
 install -d -m 0700 "${qwen_home}"
+
+if [ -n "${custom_system_defaults}" ]; then
+  if [ ! -f "${custom_system_defaults}" ] || [ ! -r "${custom_system_defaults}" ]; then
+    printf 'qwen: custom system defaults are missing or unreadable: %s\n' "${custom_system_defaults}" >&2
+    exit 1
+  fi
+  system_defaults=${custom_system_defaults}
+else
+  for required_path in "${catalog}" "${defaults_base}" "${defaults_renderer}"; do
+    if [ ! -f "${required_path}" ] || [ ! -r "${required_path}" ]; then
+      printf 'qwen: shared configuration input is missing or unreadable: %s\n' "${required_path}" >&2
+      exit 1
+    fi
+  done
+  if ! command -v jq >/dev/null 2>&1; then
+    printf 'qwen: jq is required to derive Qwen providers from the shared OpenCode catalog\n' >&2
+    exit 1
+  fi
+
+  system_defaults=${qwen_home}/system-defaults.generated.json
+  rendered_defaults=$(mktemp "${qwen_home}/system-defaults.XXXXXX")
+  if ! jq --slurpfile base "${defaults_base}" --from-file "${defaults_renderer}" "${catalog}" > "${rendered_defaults}"; then
+    unlink "${rendered_defaults}"
+    exit 1
+  fi
+  chmod 0600 "${rendered_defaults}"
+  mv -f "${rendered_defaults}" "${system_defaults}"
+fi
+
+export QWEN_CODE_SYSTEM_DEFAULTS_PATH="${system_defaults}"
 ensure_context_link "${qwen_home}/QWEN.md" "${prompts_dir}/AGENTS.md"
 ensure_context_link "${qwen_home}/skills" "${prompts_dir}/skills"
 ensure_context_link "${qwen_home}/agents" "${prompts_dir}/agents"
