@@ -1,8 +1,5 @@
 #!/bin/sh
 
-echo Starting container
-ruby /shared/scripts/entrypoint.rb > /shared/log/last_startup
-
 ensure_shared_link() {
   target=$1
   link=$2
@@ -24,6 +21,9 @@ ensure_shared_link /opt/ai-prompts/AGENTS.md /home/dev/.dsh/AGENTS.md
 ensure_shared_link /opt/opencode-shared/deepseek-harness/cordis.patch.yml /home/dev/.dsh/cordis.patch.yml
 ensure_shared_link /opt/opencode-shared/local/deepseek-harness.env /home/dev/.dsh/.env
 ensure_shared_link /opt/ai-prompts/skills /home/dev/.agents/skills
+
+echo Starting container
+ruby /shared/scripts/entrypoint.rb > /shared/log/last_startup
 
 echo Starting SSH daemon
 /usr/sbin/sshd -D
