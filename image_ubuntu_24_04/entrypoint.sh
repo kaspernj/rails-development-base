@@ -16,10 +16,14 @@ ensure_shared_link() {
 }
 
 install -d -m 0700 -o dev -g dev /home/dev/.dsh
+install -d -m 0700 -o dev -g dev /home/dev/.dsh/profiles/dev
 install -d -m 0755 -o dev -g dev /home/dev/.agents
 ensure_shared_link /opt/ai-prompts/AGENTS.md /home/dev/.dsh/AGENTS.md
 ensure_shared_link /opt/opencode-shared/deepseek-harness/cordis.patch.yml /home/dev/.dsh/cordis.patch.yml
 ensure_shared_link /opt/opencode-shared/local/deepseek-harness.env /home/dev/.dsh/.env
+ensure_shared_link /opt/opencode-shared/deepseek-harness/profiles/dev/package.json /home/dev/.dsh/profiles/dev/package.json
+ensure_shared_link /opt/opencode-shared/deepseek-harness/profiles/dev/cordis.patch.yml /home/dev/.dsh/profiles/dev/cordis.patch.yml
+ensure_shared_link /opt/opencode-shared/deepseek-harness/profiles/dev/pnpm-workspace.yaml /home/dev/.dsh/profiles/dev/pnpm-workspace.yaml
 ensure_shared_link /opt/ai-prompts/skills /home/dev/.agents/skills
 
 echo Starting container

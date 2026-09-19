@@ -162,11 +162,14 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   echo "Checking dev login shell defaults" && \
   su dev -c 'TERM=xterm-256color /bin/bash -lic '\''test -n "$LS_COLORS" && alias ls | grep -q -- "--color=auto" && grep -Fq "\\033[01;32m" <<< "$PS1"'\''' && \
   echo "Configure shared DeepSeek Harness prompts, skills and preferences" && \
-  install -d -m 0700 -o dev -g dev /home/dev/.dsh && \
+  install -d -m 0700 -o dev -g dev /home/dev/.dsh /home/dev/.dsh/profiles/dev && \
   install -d -m 0755 -o dev -g dev /home/dev/.agents && \
   su dev -c 'ln -s /opt/ai-prompts/AGENTS.md /home/dev/.dsh/AGENTS.md' && \
   su dev -c 'ln -s /opt/opencode-shared/deepseek-harness/cordis.patch.yml /home/dev/.dsh/cordis.patch.yml' && \
   su dev -c 'ln -s /opt/opencode-shared/local/deepseek-harness.env /home/dev/.dsh/.env' && \
+  su dev -c 'ln -s /opt/opencode-shared/deepseek-harness/profiles/dev/package.json /home/dev/.dsh/profiles/dev/package.json' && \
+  su dev -c 'ln -s /opt/opencode-shared/deepseek-harness/profiles/dev/cordis.patch.yml /home/dev/.dsh/profiles/dev/cordis.patch.yml' && \
+  su dev -c 'ln -s /opt/opencode-shared/deepseek-harness/profiles/dev/pnpm-workspace.yaml /home/dev/.dsh/profiles/dev/pnpm-workspace.yaml' && \
   su dev -c 'ln -s /opt/ai-prompts/skills /home/dev/.agents/skills' && \
   echo "Preparing home dir to be moved into mount on first boot" && \
   mv /home/dev /home/dev-sample
