@@ -11,6 +11,10 @@ ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV PATH=/home/dev/.local/bin:$PATH
 ENV DEBIAN_FRONTEND=noninteractive
+ENV DSH_HOME=/home/dev/.dsh
+ENV DSH_AGENTS_HOME=/opt/ai-prompts
+ENV DSH_PERMISSION_MODE=danger-full-access
+ENV DSH_TELEMETRY_DISABLED=1
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
 ADD qwen-code-launcher /usr/local/bin/qwen
@@ -83,6 +87,10 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
   echo "Install latest npm" && \
   npm install --global npm && \
+  echo "Install the latest DeepSeek Harness release" && \
+  npm install --global --prefix /usr/local --strict-allow-scripts \
+    --allow-scripts=@deepseek-ai/dsh-subprocess-local,koffi,node-pty,@google/genai,protobufjs \
+    @deepseek-ai/dsh@latest && \
   echo "Install Claude Code from Anthropic's signed APT repository" && \
   install -d -m 0755 /etc/apt/keyrings && \
   curl -fsSL https://downloads.claude.ai/keys/claude-code.asc -o /etc/apt/keyrings/claude-code.asc && \
@@ -112,8 +120,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   test "$(qwen --version)" = "${QWEN_CODE_VERSION}" && \
   rm -f /tmp/codex-install.sh /tmp/kimi-install.sh /tmp/opencode-install.sh /tmp/qwen-code-install.sh && \
   echo "Verify shared AI CLIs as root and dev" && \
-  for cli in codex claude kimi opencode qwen; do resolved="$(command -v "$cli")" && case "$resolved" in /usr/local/bin/*|/usr/bin/*) ;; *) exit 1 ;; esac && "$cli" --version; done && \
-  su dev -c 'for cli in codex claude kimi opencode qwen; do resolved="$(command -v "$cli")" && case "$resolved" in /usr/local/bin/*|/usr/bin/*) ;; *) exit 1 ;; esac && "$cli" --version; done' && \
+  for cli in codex claude dsh kimi opencode qwen; do resolved="$(command -v "$cli")" && case "$resolved" in /usr/local/bin/*|/usr/bin/*) ;; *) exit 1 ;; esac && "$cli" --version; done && \
+  su dev -c 'for cli in codex claude dsh kimi opencode qwen; do resolved="$(command -v "$cli")" && case "$resolved" in /usr/local/bin/*|/usr/bin/*) ;; *) exit 1 ;; esac && "$cli" --version; done' && \
   echo "Install Yarn" && \
   npm install --global yarn && \
 
@@ -153,6 +161,16 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
   chmod 0755 /usr/local/bin/chromedriver && \
   echo "Checking dev login shell defaults" && \
   su dev -c 'TERM=xterm-256color /bin/bash -lic '\''test -n "$LS_COLORS" && alias ls | grep -q -- "--color=auto" && grep -Fq "\\033[01;32m" <<< "$PS1"'\''' && \
+  echo "Configure shared DeepSeek Harness prompts, skills and preferences" && \
+  install -d -m 0700 -o dev -g dev /home/dev/.dsh /home/dev/.dsh/profiles/dev && \
+  install -d -m 0755 -o dev -g dev /home/dev/.agents && \
+  su dev -c 'ln -s /opt/ai-prompts/AGENTS.md /home/dev/.dsh/AGENTS.md' && \
+  su dev -c 'ln -s /opt/opencode-shared/deepseek-harness/cordis.patch.yml /home/dev/.dsh/cordis.patch.yml' && \
+  su dev -c 'ln -s /opt/opencode-shared/local/deepseek-harness.env /home/dev/.dsh/.env' && \
+  su dev -c 'ln -s /opt/opencode-shared/deepseek-harness/profiles/dev/package.json /home/dev/.dsh/profiles/dev/package.json' && \
+  su dev -c 'ln -s /opt/opencode-shared/deepseek-harness/profiles/dev/cordis.patch.yml /home/dev/.dsh/profiles/dev/cordis.patch.yml' && \
+  su dev -c 'ln -s /opt/opencode-shared/deepseek-harness/profiles/dev/pnpm-workspace.yaml /home/dev/.dsh/profiles/dev/pnpm-workspace.yaml' && \
+  su dev -c 'ln -s /opt/ai-prompts/skills /home/dev/.agents/skills' && \
   echo "Preparing home dir to be moved into mount on first boot" && \
   mv /home/dev /home/dev-sample
 
