@@ -15,8 +15,7 @@ ensure_shared_link() {
   fi
 }
 
-install -d -m 0700 -o dev -g dev /home/dev/.dsh
-install -d -m 0700 -o dev -g dev /home/dev/.dsh/profiles/dev
+install -d -m 0700 -o dev -g dev /home/dev/.dsh /home/dev/.dsh/profiles /home/dev/.dsh/profiles/dev
 install -d -m 0755 -o dev -g dev /home/dev/.agents
 ensure_shared_link /opt/ai-prompts/AGENTS.md /home/dev/.dsh/AGENTS.md
 ensure_shared_link /opt/opencode-shared/deepseek-harness/cordis.patch.yml /home/dev/.dsh/cordis.patch.yml
